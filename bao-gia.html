@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Báo giá lắp đặt điện mặt trời áp mái — Solar 3T Nghệ An</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#20261F;
+    --paper:#F6F3EA;
+    --paper-2:#EFEADB;
+    --forest:#1C4B33;
+    --forest-2:#28603F;
+    --gold:#B8892B;
+    --seal:#9A2B2B;
+    --line:#D8D0BC;
+    --muted:#6B6656;
+    --white:#FFFDF8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:40px 24px 80px;}
+
+  /* HEADER */
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:24px;
+    border-bottom:2px solid var(--forest);
+    padding-bottom:24px;
+    margin-bottom:32px;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--forest-2);
+    margin-bottom:8px;
+  }
+  h1{
+    font-family:'Source Serif 4',serif;
+    font-weight:700;
+    font-size:30px;
+    margin:0 0 6px;
+    line-height:1.15;
+    color:var(--forest);
+  }
+  header p{margin:0;color:var(--muted);font-size:14px;max-width:52ch;}
+
+  .seal{
+    flex-shrink:0;
+    width:104px;height:104px;
+    border-radius:50%;
+    border:2.5px solid var(--seal);
+    display:flex;align-items:center;justify-content:center;
+    text-align:center;
+    color:var(--seal);
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    line-height:1.35;
+    font-weight:700;
+    letter-spacing:.02em;
+    transform:rotate(-6deg);
+    position:relative;
+    opacity:.92;
+  }
+  .seal::before{
+    content:"";
+    position:absolute;inset:6px;
+    border:1px dashed var(--seal);
+    border-radius:50%;
+    opacity:.6;
+  }
+
+  /* SECTION CARD */
+  .card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:28px;
+    margin-bottom:24px;
+  }
+  @media (max-width:640px){ .wrap{padding:20px 14px 60px;} .card{padding:18px;} h1{font-size:24px;} .seal{width:80px;height:80px;font-size:9px;} }
+  .card h2{
+    font-family:'Source Serif 4',serif;
+    font-size:18px;
+    font-weight:600;
+    margin:0 0 4px;
+    color:var(--forest);
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  .card h2 .n{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--gold);
+    font-weight:700;
+  }
+  .card .sub{color:var(--muted);font-size:13px;margin:0 0 20px;}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .grid.g3{grid-template-columns:1fr 1fr 1fr;}
+  @media (max-width:640px){.grid,.grid.g3{grid-template-columns:1fr;}}
+
+  label{
+    display:block;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--ink);
+    margin-bottom:6px;
+  }
+  label .opt{color:var(--muted);font-weight:400;font-style:italic;}
+  input[type=text],input[type=tel],input[type=number],select{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    background:var(--paper);
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    color:var(--ink);
+  }
+  input:focus,select:focus{
+    outline:none;
+    border-color:var(--forest-2);
+    background:var(--white);
+  }
+  .field{margin-bottom:16px;}
+
+  .chip-row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+  .chip{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    padding:6px 12px;
+    border:1px solid var(--forest-2);
+    color:var(--forest-2);
+    background:transparent;
+    border-radius:20px;
+    cursor:pointer;
+    transition:all .15s;
+  }
+  .chip:hover{background:var(--forest-2);color:var(--white);}
+  .chip.active{background:var(--forest-2);color:var(--white);}
+
+  .method-toggle{display:flex;gap:10px;margin-bottom:4px;}
+  .method-card{
+    flex:1;
+    border:1.5px solid var(--line);
+    border-radius:4px;
+    padding:14px 16px;
+    cursor:pointer;
+    transition:all .15s;
+  }
+  .method-card.active{
+    border-color:var(--forest);
+    background:#EFF4EE;
+  }
+  .method-card .m-title{font-weight:700;font-size:13.5px;color:var(--forest);margin-bottom:3px;}
+  .method-card .m-desc{font-size:12px;color:var(--muted);line-height:1.4;}
+  @media (max-width:640px){.method-toggle{flex-direction:column;}}
+
+  .roof-toggle{display:flex;gap:10px;margin-bottom:4px;}
+  .roof-card{
+    flex:1;
+    text-align:center;
+    border:1.5px solid var(--line);
+    border-radius:4px;
+    padding:12px 8px;
+    cursor:pointer;
+    transition:all .15s;
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .roof-card .r-desc{font-weight:400;color:var(--muted);font-size:11px;margin-top:3px;}
+  .roof-card.active{border-color:var(--forest);background:#EFF4EE;color:var(--forest);}
+  @media (max-width:640px){.roof-toggle{flex-wrap:wrap;} .roof-card{flex:1 1 45%;}}
+
+  .calc-btn{
+    width:100%;
+    background:var(--forest);
+    color:var(--white);
+    border:none;
+    padding:15px;
+    font-size:15px;
+    font-weight:600;
+    border-radius:3px;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+    letter-spacing:.01em;
+    transition:background .15s;
+    margin-top:8px;
+  }
+  .calc-btn:hover{background:var(--forest-2);}
+
+  /* RESULTS */
+  #resultsCard,#quoteCard{display:none;}
+  .summary-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    margin-bottom:16px;
+  }
+  @media (max-width:640px){.summary-grid{grid-template-columns:1fr 1fr;}}
+  .summary-item{background:var(--white);padding:16px 14px;}
+  .summary-item .label{
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--muted);
+    margin-bottom:6px;
+    font-weight:600;
+  }
+  .summary-item .value{
+    font-family:'JetBrains Mono',monospace;
+    font-size:18px;
+    font-weight:700;
+    color:var(--forest);
+  }
+  .summary-item.highlight{background:var(--forest);}
+  .summary-item.highlight .label{color:#CFE0D5;}
+  .summary-item.highlight .value{color:var(--white);}
+  .summary-item.gold .label{color:#8a6a26;}
+  .summary-item.gold .value{color:var(--gold);}
+  .summary-item.warn{background:#F4EBE3;}
+  .summary-item.warn .value{color:var(--seal);}
+
+  .warn-banner{
+    background:#F4EBE3;border-left:3px solid var(--seal);color:var(--seal);
+    padding:12px 16px;border-radius:0 3px 3px 0;font-size:12.5px;margin-bottom:16px;line-height:1.5;
+  }
+
+  .note-box{
+    font-size:12.5px;
+    color:var(--muted);
+    background:var(--paper-2);
+    border-left:3px solid var(--forest-2);
+    padding:12px 16px;
+    margin:16px 0 0;
+    border-radius:0 3px 3px 0;
+    line-height:1.55;
+  }
+
+  /* QUOTE HEAD (printable letterhead) */
+  .quote-head{
+    display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
+    padding-bottom:16px;margin-bottom:18px;border-bottom:1px dashed var(--line);
+    flex-wrap:wrap;
+  }
+  .quote-head .qh-company{font-family:'Source Serif 4',serif;font-weight:700;color:var(--forest);font-size:16px;}
+  .quote-head .qh-company small{display:block;font-family:'Inter',sans-serif;font-weight:400;color:var(--muted);font-size:12px;margin-top:3px;}
+  .quote-head .qh-meta{text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);}
+  .quote-head .qh-meta b{color:var(--ink);}
+  @media (max-width:640px){.quote-head{flex-direction:column;} .quote-head .qh-meta{text-align:left;}}
+
+  .cust-recap{
+    font-size:13px;
+    color:var(--muted);
+    background:var(--paper-2);
+    border-left:3px solid var(--gold);
+    padding:12px 16px;
+    margin-bottom:18px;
+    border-radius:0 3px 3px 0;
+  }
+  .cust-recap b{color:var(--ink);}
+
+  /* QUOTE TABLE */
+  .table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:4px;}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:640px;}
+  thead th{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    text-align:right;
+    padding:9px 10px;
+    background:var(--forest);
+    color:var(--white);
+    white-space:nowrap;
+  }
+  thead th:first-child,thead th:nth-child(2),thead th:nth-child(3){text-align:left;}
+  tbody td{
+    padding:8px 10px;
+    text-align:right;
+    font-family:'JetBrains Mono',monospace;
+    border-bottom:1px solid var(--line);
+    vertical-align:middle;
+  }
+  tbody td:first-child{text-align:center;font-weight:600;color:var(--forest);width:32px;}
+  tbody td:nth-child(2){text-align:left;font-family:'Inter',sans-serif;font-weight:600;color:var(--ink);white-space:nowrap;}
+  tbody td:nth-child(3){text-align:left;font-family:'Inter',sans-serif;color:var(--muted);font-size:11.5px;max-width:220px;}
+  tbody td:nth-child(4){text-align:center;font-family:'Inter',sans-serif;color:var(--muted);font-size:11.5px;white-space:nowrap;}
+  tbody tr:nth-child(even){background:#FAF8F1;}
+  tbody tr.total-row td{border-bottom:none;border-top:2px solid var(--forest);font-weight:700;padding-top:12px;}
+  tbody tr.grand-row td{font-weight:700;color:var(--forest);font-size:14px;}
+
+  td input[type=number]{
+    width:100%;min-width:70px;text-align:right;padding:6px 7px;font-size:12.5px;
+    border:1px solid var(--line);border-radius:3px;background:var(--paper);
+  }
+  input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+  input[type=number]{-moz-appearance:textfield;}
+
+  .hide-mobile{}
+  @media (max-width:640px){
+    table{min-width:0;font-size:11.5px;}
+    thead th,tbody td{padding:6px 6px;}
+    .hide-mobile{display:none;}
+    td input[type=number]{min-width:56px;font-size:11.5px;padding:5px;}
+  }
+
+  .vat-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font-size:13.5px;flex-wrap:wrap;gap:8px;}
+  .vat-row .cf-label{color:var(--muted);}
+
+  .actions{display:flex;gap:10px;margin:20px 0 8px;flex-wrap:wrap;}
+  .btn-secondary{
+    flex:1;
+    min-width:140px;
+    background:var(--white);
+    border:1.5px solid var(--forest);
+    color:var(--forest);
+    padding:12px;
+    font-weight:600;
+    font-size:13.5px;
+    border-radius:3px;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+  }
+  .btn-secondary:hover{background:#EFF4EE;}
+  .btn-secondary.gold{border-color:var(--gold);color:var(--gold);}
+  .btn-secondary.gold:hover{background:#FBF3E3;}
+
+  .sig-row{display:none;}
+  .sig-row{display:flex;justify-content:space-between;margin-top:32px;text-align:center;gap:24px;}
+  .sig-row .sig{flex:1;font-size:12.5px;color:var(--muted);}
+  .sig-row .sig b{display:block;color:var(--ink);font-size:13px;margin-bottom:56px;}
+  .sig-row .sig .sig-sub{font-style:italic;font-size:11px;}
+
+  footer{text-align:center;font-size:11.5px;color:var(--muted);margin-top:40px;font-family:'JetBrains Mono',monospace;line-height:1.6;}
+
+  @media print{
+    body{background:white;}
+    .no-print{display:none !important;}
+    .card{border:none;box-shadow:none;padding:0;margin-bottom:18px;}
+    .table-scroll{overflow:visible;border:none;}
+    table{min-width:0;}
+    td input[type=number]{border:none;background:transparent;padding:2px 0;color:var(--ink);}
+    .wrap{padding:0;max-width:100%;}
+    header{border-bottom-color:#000;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="eyebrow">SOLAR 3T NGHỆ AN · ĐT 0977 687 227 · Công cụ báo giá</div>
+      <h1>Báo giá lắp đặt điện mặt trời áp mái</h1>
+      <p>Nhập tiền điện hàng tháng hoặc công suất mong muốn → ra ngay công suất hệ (kWp), số tấm pin, diện tích mái, và bảng báo giá chi tiết theo từng hạng mục — có thể chỉnh sửa giá trước khi in, xuất PDF, gửi khách qua Zalo.</p>
+    </div>
+    <div class="seal">BÁO GIÁ<br>SOLAR 3T<br>★<br>2026</div>
+  </header>
+
+  <!-- 01 KHÁCH HÀNG -->
+  <div class="card no-print-controls">
+    <h2><span class="n">01</span> Thông tin khách hàng</h2>
+    <p class="sub">Điền để hiển thị trên bản báo giá khi in / xuất PDF.</p>
+    <div class="grid">
+      <div class="field">
+        <label>Họ và tên khách hàng</label>
+        <input type="text" id="custName" placeholder="Nguyễn Văn A" oninput="refreshCustRecap()">
+      </div>
+      <div class="field">
+        <label>Số điện thoại</label>
+        <input type="tel" id="custPhone" placeholder="09xx xxx xxx" oninput="refreshCustRecap()">
+      </div>
+    </div>
+    <div class="grid">
+      <div class="field">
+        <label>Địa chỉ / công trình</label>
+        <input type="text" id="custAddr" placeholder="Xã/phường, huyện, Nghệ An" oninput="refreshCustRecap()">
+      </div>
+      <div class="field">
+        <label>Nhân viên báo giá <span class="opt">(không bắt buộc)</span></label>
+        <input type="text" id="staffName" placeholder="Tên nhân viên tư vấn" oninput="refreshCustRecap()">
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 QUY MO HE THONG -->
+  <div class="card no-print-controls">
+    <h2><span class="n">02</span> Quy mô hệ thống đề xuất</h2>
+    <p class="sub">Tính cho hệ <b>hoà lưới bám tải, không lưu trữ</b> (on-grid, không pin lưu điện) — áp dụng cho công suất <b>dưới 100 kWp</b>. Hệ có lưu trữ (hybrid) hoặc từ 100 kWp trở lên cần khảo sát và báo giá riêng.</p>
+
+    <div class="method-toggle">
+      <div class="method-card active" id="modeBillCard" onclick="setMode('bill')">
+        <div class="m-title">Theo tiền điện hàng tháng</div>
+        <div class="m-desc">Chỉ cần hoá đơn tiền điện trung bình mỗi tháng — hệ thống tự gợi ý công suất phù hợp.</div>
+      </div>
+      <div class="method-card" id="modeKwpCard" onclick="setMode('kwp')">
+        <div class="m-title">Nhập trực tiếp công suất (kWp)</div>
+        <div class="m-desc">Đã khảo sát mái / đã biết công suất khách muốn lắp — nhập thẳng số kWp.</div>
+      </div>
+    </div>
+
+    <div id="modeBillFields" style="margin-top:16px;">
+      <div class="grid">
+        <div class="field">
+          <label>Tiền điện trung bình / tháng <span class="opt">(từ 1.500.000đ trở lên)</span></label>
+          <input type="text" inputmode="numeric" id="billAmount" placeholder="VD: 2.500.000">
+        </div>
+        <div class="field">
+          <label>Giá điện bình quân (đ/kWh) <span class="opt">(thường 1.800 – 3.500)</span></label>
+          <input type="text" inputmode="numeric" id="elecPrice" value="2,900">
+        </div>
+      </div>
+      <div class="field">
+        <label>Mức độ sử dụng điện ban ngày <span class="opt">(ảnh hưởng tỷ lệ tự dùng điện mặt trời)</span></label>
+        <div class="chip-row" id="usageChips">
+          <button type="button" class="chip" data-usage="low" onclick="setUsage('low')">Ít — nhà ở, đi làm giờ hành chính</button>
+          <button type="button" class="chip active" data-usage="mid" onclick="setUsage('mid')">Trung bình — ở nhà bán thời gian, cửa hàng nhỏ</button>
+          <button type="button" class="chip" data-usage="high" onclick="setUsage('high')">Nhiều — kinh doanh, xưởng, văn phòng, trường học</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Mức bù hoá đơn tiền điện mong muốn</label>
+        <div class="chip-row" id="coverageChips">
+          <button type="button" class="chip" data-cov="60" onclick="setCoverage(60)">~60%</button>
+          <button type="button" class="chip active" data-cov="70" onclick="setCoverage(70)">~70%</button>
+          <button type="button" class="chip" data-cov="85" onclick="setCoverage(85)">~85%</button>
+          <button type="button" class="chip" data-cov="100" onclick="setCoverage(100)">~100%</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="modeKwpFields" style="display:none;margin-top:16px;">
+      <div class="grid">
+        <div class="field">
+          <label>Công suất hệ mong muốn (kWp)</label>
+          <input type="text" inputmode="decimal" id="kwpDirect" placeholder="VD: 10">
+        </div>
+        <div class="field">
+          <label>Giá điện bình quân (đ/kWh) <span class="opt">(thường 1.800 – 3.500)</span></label>
+          <input type="text" inputmode="numeric" id="elecPrice2" value="2,900">
+        </div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:4px;">
+      <label>Loại mái lắp đặt</label>
+      <div class="roof-toggle" id="roofChips">
+        <div class="roof-card active" data-roof="ton" onclick="setRoof('ton')">Mái tôn<div class="r-desc">Thi công thuận lợi nhất</div></div>
+        <div class="roof-card" data-roof="betong" onclick="setRoof('betong')">Mái bằng / bê tông<div class="r-desc">+ khung đỡ, chống thấm</div></div>
+        <div class="roof-card" data-roof="ngoi" onclick="setRoof('ngoi')">Mái ngói<div class="r-desc">+ khung đỡ chuyên dụng, dốc mái</div></div>
+      </div>
+    </div>
+
+    <button class="calc-btn" onclick="calcAll()">Tính báo giá</button>
+  </div>
+
+  <!-- 03 KET QUA QUY MO -->
+  <div class="card" id="resultsCard">
+    <h2><span class="n">03</span> Thông số hệ thống đề xuất</h2>
+    <div id="capWarning"></div>
+    <div class="summary-grid" id="sizingGrid"></div>
+    <div class="note-box" id="sizingNote"></div>
+  </div>
+
+  <!-- 04 BANG BAO GIA -->
+  <div class="card" id="quoteCard">
+    <h2><span class="n">04</span> Bảng báo giá chi tiết</h2>
+    <p class="sub no-print">Có thể sửa trực tiếp <b>Số lượng</b> và <b>Đơn giá</b> từng mục cho khớp với thực tế công trình — bảng sẽ tự tính lại tổng tiền.</p>
+
+    <div class="quote-head">
+      <div class="qh-company">SOLAR 3T NGHỆ AN
+        <small>Nghi Phú, TP. Vinh, Nghệ An · ĐT: 0977 687 227</small>
+      </div>
+      <div class="qh-meta">
+        Số báo giá: <b id="qNo">—</b><br>
+        Ngày lập: <b id="qDate">—</b><br>
+        Hiệu lực: <b>15 ngày</b> kể từ ngày lập
+      </div>
+    </div>
+
+    <div class="cust-recap" id="custRecap">Khách hàng: <b>—</b></div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Hạng mục</th>
+            <th class="hide-mobile">Diễn giải</th>
+            <th class="hide-mobile">ĐVT</th>
+            <th>SL</th>
+            <th>Đơn giá (đ)</th>
+            <th>Thành tiền (đ)</th>
+          </tr>
+        </thead>
+        <tbody id="quoteBody"></tbody>
+      </table>
+    </div>
+
+    <div class="vat-row">
+      <div class="cf-label">Thuế VAT áp dụng</div>
+      <div class="chip-row" id="vatChips" style="margin-top:0;">
+        <button type="button" class="chip active" data-vat="0" onclick="setVat(0)">0% (hộ dân, không xuất VAT)</button>
+        <button type="button" class="chip" data-vat="8" onclick="setVat(8)">8%</button>
+        <button type="button" class="chip" data-vat="10" onclick="setVat(10)">10%</button>
+      </div>
+    </div>
+    <div class="vat-row"><div class="cf-label">Tạm tính</div><div id="subtotalOut" style="font-family:'JetBrains Mono',monospace;font-weight:600;">—</div></div>
+    <div class="vat-row"><div class="cf-label">Tiền thuế VAT</div><div id="vatOut" style="font-family:'JetBrains Mono',monospace;font-weight:600;">—</div></div>
+    <div class="vat-row" style="border-bottom:none;padding-top:14px;border-top:2px solid var(--forest);">
+      <div class="cf-label" style="font-weight:700;color:var(--forest);">TỔNG CỘNG</div>
+      <div id="grandOut" style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:19px;color:var(--forest);">—</div>
+    </div>
+
+    <div class="sig-row">
+      <div class="sig"><b>Đại diện bên bán</b>SOLAR 3T NGHỆ AN<div class="sig-sub">(Ký, ghi rõ họ tên)</div></div>
+      <div class="sig"><b>Khách hàng xác nhận</b><span id="sigCustName">&nbsp;</span><div class="sig-sub">(Ký, ghi rõ họ tên)</div></div>
+    </div>
+
+    <div class="actions no-print">
+      <button class="btn-secondary" onclick="window.print()">🖨 In / Lưu PDF</button>
+      <button class="btn-secondary gold" onclick="exportCSV()">⬇ Xuất CSV</button>
+    </div>
+    <div class="note-box no-print">
+      <b>Cách gửi khách qua Zalo:</b> bấm "In / Lưu PDF" → ở hộp thoại in, chọn máy in <b>"Save as PDF / Lưu dưới dạng PDF"</b> → lưu file → mở Zalo, chọn cuộc trò chuyện/nhóm với khách và gửi file PDF vừa lưu.<br><br>
+      <b>Lưu ý:</b> giá trong bảng là <b>ước tính tham khảo theo mặt bằng thị trường 8/2026</b> (thiết bị chính hãng phổ thông, thi công tiêu chuẩn). Có thể chỉnh từng dòng cho khớp báo giá nhà cung cấp thực tế. Cần khảo sát mái, kết cấu, khoảng cách tủ điện thực địa trước khi chốt hợp đồng chính thức. Giá chưa gồm chi phí phát sinh nếu mái yếu cần gia cố kết cấu, hoặc khoảng cách đấu nối tủ điện lưới vượt 20m.
+    </div>
+  </div>
+
+  <footer>SOLAR 3T NGHỆ AN · NGHI PHÚ, VINH, NGHỆ AN · ĐT: 0977 687 227<br>BẢNG BÁO GIÁ THAM KHẢO, KHÔNG PHẢI HOÁ ĐƠN — VUI LÒNG KHẢO SÁT THỰC TẾ TRƯỚC KHI KÝ HỢP ĐỒNG</footer>
+</div>
+
+<script>
+/* ============================================================
+   BẢNG TRA CỨU GIẢ ĐỊNH THỊ TRƯỜNG — cập nhật 8/2026
+   ============================================================ */
+const PANEL_W = 620;
+const PANEL_PRICE_DEFAULT = 2_500_000;
+const PANEL_AREA_M2 = 2.6;
+const YIELD_PER_KWP_YEAR = 1450; // kWh/kWp/nam, tham khao buc xa Nghe An
+
+// Suat dau tu tron goi tham khao thi truong (mai ton, chua VAT), giam dan theo quy mo
+const INVEST_TIERS = [
+  {max:3,   suat:15_800_000},
+  {max:5,   suat:15_200_000},
+  {max:8,   suat:14_500_000},
+  {max:12,  suat:13_800_000},
+  {max:20,  suat:13_300_000},
+  {max:30,  suat:12_800_000},
+  {max:50,  suat:12_300_000},
+  {max:75,  suat:11_900_000},
+  {max:100, suat:11_600_000},
+];
+function suatDauTuFor(kwp){
+  for(const t of INVEST_TIERS){ if(kwp<=t.max) return t.suat; }
+  return INVEST_TIERS[INVEST_TIERS.length-1].suat;
+}
+
+const USAGE_PROFILES = {
+  low:  {selfUse:0.60},
+  mid:  {selfUse:0.72},
+  high: {selfUse:0.85},
+};
+
+const ROOF = {
+  ton:    {label:'Mái tôn',            areaFactor:1.25, mountMul:1.00, laborMul:1.00, floorPremium:0},
+  betong: {label:'Mái bằng / bê tông', areaFactor:1.25, mountMul:1.15, laborMul:1.10, floorPremium:2_000_000},
+  ngoi:   {label:'Mái ngói',           areaFactor:1.35, mountMul:1.45, laborMul:1.25, floorPremium:5_000_000},
+};
+
+// Ty trong cac hang muc trong suat dau tu tham khao (mai ton), tong = 100%
+const SHARE = {inverter:0.14, mount:0.11, electrical:0.11, labor:0.13, design:0.05, transport:0.04};
+
+/* ---------------- formatting helpers ---------------- */
+function fmt(n){ return Math.round(n).toLocaleString('en-US') + ' đ'; }
+function fmtInt(n){ return Math.round(n).toLocaleString('en-US'); }
+function fmtKwp(n){ return n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' kWp'; }
+function fmtM2(n){ return n.toLocaleString('en-US',{minimumFractionDigits:1,maximumFractionDigits:1}) + ' m²'; }
+function fmtPct(n){ return (n*100).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}) + '%'; }
+// num(): dùng cho các ô TIỀN/SỐ LƯỢNG NGUYÊN (tiền điện, giá điện, đơn giá, số lượng) — loại bỏ MỌI ký tự không phải chữ số,
+// kể cả dấu chấm/phẩy phân cách nghìn, để tránh bị JS hiểu nhầm "2.900" (hai nghìn chín trăm) thành số thập phân 2,9.
+function num(id){ const el=document.getElementById(id); if(!el) return 0; return Number((el.value||'').toString().replace(/[^\d]/g,'')) || 0; }
+// numDec(): CHỈ dùng cho ô công suất kWp nhập trực tiếp — cho phép giữ dấu chấm thập phân (VD 10.5 kWp).
+function numDec(id){ const el=document.getElementById(id); if(!el) return 0; return Number((el.value||'').toString().replace(/[^\d.]/g,'')) || 0; }
+function attachThousands(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.addEventListener('input', (e)=>{
+    let raw = e.target.value.replace(/[^\d]/g,'');
+    if(raw === ''){ e.target.value=''; return; }
+    e.target.value = Number(raw).toLocaleString('en-US');
+  });
+}
+['billAmount','elecPrice','elecPrice2'].forEach(attachThousands);
+
+/* ================= STATE ================= */
+let mode = 'bill';        // 'bill' | 'kwp'
+let usageKey = 'mid';
+let coveragePct = 70;
+let roofKey = 'ton';
+let vatPct = 0;
+let lastKwp = 0;
+
+function setMode(m){
+  mode = m;
+  document.getElementById('modeBillCard').classList.toggle('active', m==='bill');
+  document.getElementById('modeKwpCard').classList.toggle('active', m==='kwp');
+  document.getElementById('modeBillFields').style.display = m==='bill' ? 'block':'none';
+  document.getElementById('modeKwpFields').style.display = m==='kwp' ? 'block':'none';
+}
+function setUsage(k){
+  usageKey = k;
+  document.querySelectorAll('#usageChips .chip').forEach(c=>c.classList.toggle('active', c.dataset.usage===k));
+}
+function setCoverage(v){
+  coveragePct = v;
+  document.querySelectorAll('#coverageChips .chip').forEach(c=>c.classList.toggle('active', Number(c.dataset.cov)===v));
+}
+function setRoof(k){
+  roofKey = k;
+  document.querySelectorAll('#roofChips .roof-card').forEach(c=>c.classList.toggle('active', c.dataset.roof===k));
+}
+function setVat(v){
+  vatPct = v;
+  document.querySelectorAll('#vatChips .chip').forEach(c=>c.classList.toggle('active', Number(c.dataset.vat)===v));
+  recalcQuote();
+}
+function refreshCustRecap(){
+  const name = document.getElementById('custName').value || '(chưa nhập)';
+  const phone = document.getElementById('custPhone').value;
+  const addr = document.getElementById('custAddr').value;
+  let line = `Khách hàng: <b>${name}</b>`;
+  if(phone) line += ` · ĐT: <b>${phone}</b>`;
+  if(addr) line += ` · Địa chỉ: <b>${addr}</b>`;
+  document.getElementById('custRecap').innerHTML = line;
+  document.getElementById('sigCustName').textContent = name !== '(chưa nhập)' ? name : '';
+}
+
+/* ================= SIZING ================= */
+function calcAll(){
+  const selfUse = USAGE_PROFILES[usageKey].selfUse;
+  let kwpRaw, elecPriceUsed;
+
+  // Giá điện thực tế ở Việt Nam luôn nằm trong khoảng ~1.800 - 3.500đ/kWh (bậc thang EVN 2026).
+  // Chặn ở đây để tránh một ô trống/gõ nhầm làm sai lệch hàng nghìn lần toàn bộ phép tính công suất phía sau.
+  function checkElecPrice(p){
+    if(!p || p < 500 || p > 8000){
+      alert('Giá điện bình quân đang là ' + fmt(p||0) + '/kWh — chưa hợp lý. Giá điện thực tế thường trong khoảng 1.800 – 3.500đ/kWh, vui lòng kiểm tra lại ô "Giá điện bình quân".');
+      return false;
+    }
+    return true;
+  }
+
+  if(mode === 'bill'){
+    const billAmt = num('billAmount');
+    const elecPrice = num('elecPrice');
+    if(!billAmt || billAmt < 1_500_000){
+      alert('Vui lòng nhập tiền điện trung bình hàng tháng từ 1.500.000đ trở lên.');
+      return;
+    }
+    if(!checkElecPrice(elecPrice)) return;
+    elecPriceUsed = elecPrice;
+    kwpRaw = (coveragePct/100 * billAmt) / (selfUse * elecPrice * (YIELD_PER_KWP_YEAR/12));
+  } else {
+    kwpRaw = numDec('kwpDirect');
+    if(!kwpRaw || kwpRaw <= 0){
+      alert('Vui lòng nhập công suất hệ mong muốn (kWp).');
+      return;
+    }
+    const elecPrice2 = num('elecPrice2');
+    if(!checkElecPrice(elecPrice2)) return;
+    elecPriceUsed = elecPrice2;
+  }
+
+  if(!isFinite(kwpRaw) || kwpRaw <= 0){
+    alert('Không tính được công suất hệ từ số liệu đã nhập — vui lòng kiểm tra lại.');
+    return;
+  }
+
+  let capped = false;
+  if(kwpRaw >= 100){ kwpRaw = 99.9; capped = true; }
+
+  const panelCount = Math.max(1, Math.ceil(kwpRaw*1000/PANEL_W));
+  const kwpActual = panelCount*PANEL_W/1000;
+  const roof = ROOF[roofKey];
+  const area = panelCount*PANEL_AREA_M2*roof.areaFactor;
+
+  const sanLuongThang = kwpActual*YIELD_PER_KWP_YEAR/12;
+  const tienDienThang = sanLuongThang*selfUse*elecPriceUsed;
+
+  lastKwp = kwpActual;
+
+  // ---- KET QUA QUY MO ----
+  document.getElementById('capWarning').innerHTML = capped
+    ? `<div class="warn-banner">⚠ Nhu cầu tính ra vượt 100 kWp — hệ từ 100 kWp trở lên thuộc diện phải đăng ký kinh doanh mua bán điện / thủ tục đấu nối riêng theo quy định hiện hành. Bảng dưới tạm tính ở mức trần 99,9 kWp — vui lòng liên hệ đội kỹ thuật Solar 3T để khảo sát và lập hồ sơ riêng cho công trình lớn.</div>`
+    : '';
+
+  document.getElementById('sizingGrid').innerHTML = `
+    <div class="summary-item highlight"><div class="label">Công suất hệ</div><div class="value">${fmtKwp(kwpActual)}</div></div>
+    <div class="summary-item highlight"><div class="label">Số tấm pin (${PANEL_W}W/tấm)</div><div class="value">${fmtInt(panelCount)} tấm</div></div>
+    <div class="summary-item"><div class="label">Diện tích mái cần</div><div class="value">${fmtM2(area)}</div></div>
+    <div class="summary-item"><div class="label">Loại mái</div><div class="value" style="font-size:14px">${roof.label}</div></div>
+    <div class="summary-item gold"><div class="label">Sản lượng điện/tháng</div><div class="value" style="font-size:15px">${fmtInt(sanLuongThang)} kWh</div></div>
+    <div class="summary-item gold"><div class="label">Tiền điện tiết kiệm/tháng</div><div class="value" style="font-size:15px">${fmt(tienDienThang)}</div></div>
+    <div class="summary-item" id="paybackCell"><div class="label">Thời gian hoàn vốn</div><div class="value" style="font-size:15px">—</div></div>
+    <div class="summary-item"><div class="label">Tỷ lệ tự dùng áp dụng</div><div class="value" style="font-size:15px">${fmtPct(selfUse)}</div></div>
+  `;
+  document.getElementById('sizingNote').innerHTML =
+    `Giả định: sản lượng ${YIELD_PER_KWP_YEAR} kWh/kWp/năm (bức xạ tham khảo khu vực Nghệ An), giá điện bình quân ${fmt(elecPriceUsed)}/kWh, ` +
+    `tỷ lệ tự dùng ${fmtPct(selfUse)} theo mức sử dụng ban ngày đã chọn. Đây là hệ hoà lưới bám tải, không lưu trữ (on-grid). ` +
+    `Số liệu chỉ mang tính ước tính ban đầu để tư vấn nhanh — cần khảo sát thực tế phụ tải và bức xạ mái trước khi chốt thiết kế.`;
+
+  document.getElementById('resultsCard').style.display = 'block';
+
+  buildQuoteTable(kwpActual, panelCount, roof, tienDienThang);
+  document.getElementById('quoteCard').style.display = 'block';
+  refreshCustRecap();
+
+  // Ma bao gia + ngay lap
+  const today = new Date();
+  const dd = String(today.getDate()).padStart(2,'0');
+  const mm = String(today.getMonth()+1).padStart(2,'0');
+  const yy = today.getFullYear();
+  const rand = String(Math.floor(Math.random()*900)+100);
+  document.getElementById('qNo').textContent = `BG${yy}${mm}${dd}-${rand}`;
+  document.getElementById('qDate').textContent = `${dd}/${mm}/${yy}`;
+
+  document.getElementById('resultsCard').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+/* ================= BOQ / BANG BAO GIA ================= */
+const ROW_DEFS = [
+  {id:'panel',      name:'Tấm pin quang điện',           unit:'tấm',      desc:`Mono ${PANEL_W}W, hiệu suất cao, bảo hành 12 năm sản phẩm / 25-30 năm công suất`},
+  {id:'inverter',   name:'Biến tần (Inverter) hoà lưới',  unit:'bộ',       desc:'On-grid, tự động hoà đồng bộ lưới điện, bảo hành 5-10 năm'},
+  {id:'mount',      name:'Khung giá đỡ, kết cấu lắp đặt', unit:'trọn gói', desc:'Khung nhôm/thép mạ kẽm, phù hợp loại mái đã chọn'},
+  {id:'electrical', name:'Tủ điện, dây cáp DC/AC, CB, chống sét, tiếp địa, đồng hồ 2 chiều', unit:'trọn gói', desc:'Vật tư điện đạt chuẩn, an toàn chống sét lan truyền'},
+  {id:'labor',      name:'Nhân công thi công, lắp đặt, đấu nối', unit:'trọn gói', desc:'Thi công, đấu nối, nghiệm thu, vệ sinh công trình'},
+  {id:'design',     name:'Thiết kế, khảo sát, giám sát kỹ thuật, hồ sơ đấu nối lưới', unit:'trọn gói', desc:'Bản vẽ, hồ sơ xin phép đấu nối với điện lực'},
+  {id:'transport',  name:'Vận chuyển, chi phí phát sinh, bảo hành lắp đặt 5 năm', unit:'trọn gói', desc:'Vận chuyển vật tư, hỗ trợ bảo trì/bảo hành công lắp đặt'},
+];
+
+function buildQuoteTable(kwpActual, panelCount, roof, tienDienThang){
+  const suat = suatDauTuFor(kwpActual);
+  const totalRef = kwpActual*suat;
+
+  const panelCost = panelCount*PANEL_PRICE_DEFAULT;
+  let mountCost = totalRef*SHARE.mount*roof.mountMul;
+  let laborCost = totalRef*SHARE.labor*roof.laborMul;
+  const baseMountLabor = totalRef*SHARE.mount + totalRef*SHARE.labor;
+  const premium = (mountCost+laborCost) - baseMountLabor;
+  if(roof.floorPremium > 0 && premium < roof.floorPremium){
+    mountCost += (roof.floorPremium - premium);
+  }
+  const inverterCost = totalRef*SHARE.inverter;
+  const electricalCost = totalRef*SHARE.electrical;
+  const designCost = totalRef*SHARE.design;
+  const transportCost = totalRef*SHARE.transport;
+
+  const rowData = {
+    panel:      {sl:panelCount, dg:PANEL_PRICE_DEFAULT},
+    inverter:   {sl:1, dg:Math.round(inverterCost)},
+    mount:      {sl:1, dg:Math.round(mountCost)},
+    electrical: {sl:1, dg:Math.round(electricalCost)},
+    labor:      {sl:1, dg:Math.round(laborCost)},
+    design:     {sl:1, dg:Math.round(designCost)},
+    transport:  {sl:1, dg:Math.round(transportCost)},
+  };
+
+  let html = '';
+  ROW_DEFS.forEach((r, i)=>{
+    const d = rowData[r.id];
+    html += `<tr>
+      <td>${i+1}</td>
+      <td>${r.name}</td>
+      <td class="hide-mobile">${r.desc}</td>
+      <td class="hide-mobile">${r.unit}</td>
+      <td><input type="number" min="0" id="sl_${r.id}" value="${d.sl}" oninput="recalcQuote()"></td>
+      <td><input type="number" min="0" step="1000" id="dg_${r.id}" value="${d.dg}" oninput="recalcQuote()"></td>
+      <td id="tt_${r.id}">${fmt(d.sl*d.dg)}</td>
+    </tr>`;
+  });
+  document.getElementById('quoteBody').innerHTML = html;
+
+  window._monthlySaving = tienDienThang;
+  recalcQuote();
+}
+
+function recalcQuote(){
+  let subtotal = 0;
+  ROW_DEFS.forEach(r=>{
+    const sl = num(`sl_${r.id}`);
+    const dg = num(`dg_${r.id}`);
+    const tt = sl*dg;
+    const cell = document.getElementById(`tt_${r.id}`);
+    if(cell) cell.textContent = fmt(tt);
+    subtotal += tt;
+  });
+  const vatAmt = subtotal*vatPct/100;
+  const total = subtotal+vatAmt;
+
+  document.getElementById('subtotalOut').textContent = fmt(subtotal);
+  document.getElementById('vatOut').textContent = fmt(vatAmt);
+  document.getElementById('grandOut').textContent = fmt(total);
+
+  const monthlySaving = window._monthlySaving || 0;
+  const paybackCell = document.getElementById('paybackCell');
+  if(paybackCell){
+    const years = monthlySaving>0 ? (total/(monthlySaving*12)) : 0;
+    paybackCell.innerHTML = `<div class="label">Thời gian hoàn vốn</div><div class="value" style="font-size:15px">${years>0 ? years.toLocaleString('en-US',{minimumFractionDigits:1,maximumFractionDigits:1})+' năm' : '—'}</div>`;
+  }
+}
+
+/* ================= EXPORT CSV ================= */
+function exportCSV(){
+  const custName = document.getElementById('custName').value || 'khach_hang';
+  const qNo = document.getElementById('qNo').textContent;
+  let rows = [['STT','Hạng mục','Diễn giải','ĐVT','Số lượng','Đơn giá (đ)','Thành tiền (đ)']];
+  ROW_DEFS.forEach((r,i)=>{
+    const sl = num(`sl_${r.id}`);
+    const dg = num(`dg_${r.id}`);
+    rows.push([i+1, r.name, r.desc, r.unit, sl, dg, sl*dg]);
+  });
+  rows.push([]);
+  rows.push(['','','','','','Tạm tính', num2(document.getElementById('subtotalOut').textContent)]);
+  rows.push(['','','','','',`VAT ${vatPct}%`, num2(document.getElementById('vatOut').textContent)]);
+  rows.push(['','','','','','TỔNG CỘNG', num2(document.getElementById('grandOut').textContent)]);
+
+  const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8;'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `BaoGia_${qNo}_${custName.replace(/\s+/g,'_')}.csv`;
+  link.click();
+}
+function num2(s){ return Number(String(s).replace(/[^\d]/g,'')) || 0; }
+
+/* init */
+setMode('bill');
+</script>
+</body>
+</html>

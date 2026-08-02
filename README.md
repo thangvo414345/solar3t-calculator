@@ -1,10 +1,17 @@
-# Bảng tính quy mô điện mặt trời & vay vốn ưu đãi — Quỹ BVMT Nghệ An
+# Bộ công cụ điện mặt trời — Solar 3T Nghệ An
 
-Công cụ tính nhanh, chạy hoàn toàn trên trình duyệt (không cần cài đặt, không cần server, không gửi dữ liệu đi đâu cả) dành cho đội kinh doanh **Solar 3T Nghệ An** khi tư vấn khách hàng lắp điện mặt trời áp mái và vay vốn ưu đãi từ Quỹ Bảo vệ môi trường Nghệ An.
+Các công cụ tính nhanh, chạy hoàn toàn trên trình duyệt (không cần cài đặt, không cần server, không gửi dữ liệu đi đâu cả) dành cho đội kinh doanh **Solar 3T Nghệ An** khi tư vấn khách hàng lắp điện mặt trời áp mái.
 
-**Demo:** mở trực tiếp file [`index.html`](./index.html) bằng trình duyệt, hoặc bật GitHub Pages cho repo này (Settings → Pages → Deploy from branch → `main` / `root`).
+## Danh sách công cụ
 
-## Công cụ làm được gì
+| Công cụ | Dùng khi nào | Mở trực tiếp |
+|---|---|---|
+| **[Bảng tính quy mô hệ & vay vốn ưu đãi](./index.html)** | Khách muốn vay ưu đãi 1,5%/năm qua Quỹ Bảo vệ môi trường Nghệ An | [index.html](./index.html) |
+| **[Báo giá lắp đặt điện mặt trời](./bao-gia.html)** | Cần lập báo giá chi tiết theo hạng mục, in/PDF gửi khách nhanh | [bao-gia.html](./bao-gia.html) |
+
+Nếu đã bật GitHub Pages cho repo này (Settings → Pages → Deploy from branch → `main` / `root`), có thể truy cập trực tiếp qua `https://<tên-tài-khoản>.github.io/solar3t-calculator/index.html` và `.../bao-gia.html` mà không cần tải file.
+
+## 1. Bảng tính quy mô hệ & vay vốn ưu đãi (`index.html`)
 
 1. **Quy mô hệ thống điện mặt trời** — nhập một trong hai cách:
    - Theo ngân sách đầu tư dự kiến, hoặc
@@ -30,17 +37,29 @@ Toàn bộ giả định đều có thể chỉnh sửa trực tiếp trên giao
 
 Các con số trên là **ước tính tham khảo tại thời điểm 8/2026**, dùng để tư vấn ban đầu. Trước khi chốt hợp đồng cần khảo sát kỹ thuật thực tế (bức xạ, kết cấu mái, phụ tải tiêu thụ) và lấy báo giá chính thức từ đối tác thi công, đồng thời xác nhận điều kiện vay cụ thể với Quỹ Bảo vệ môi trường Nghệ An.
 
+## 2. Báo giá lắp đặt điện mặt trời (`bao-gia.html`)
+
+Lập báo giá chi tiết theo hạng mục ngay tại chỗ, tối ưu cho cả điện thoại và máy tính:
+
+1. Nhập họ tên khách + **tiền điện trung bình hàng tháng** (từ 1.500.000đ trở lên), chọn mức dùng điện ban ngày và mức bù hoá đơn mong muốn — hoặc nhập thẳng **công suất (kWp)** nếu đã khảo sát. Áp dụng cho hệ **dưới 100 kWp** (hoà lưới, không lưu trữ).
+2. Chọn loại mái (**tôn / bê tông / ngói**) — mái ngói và mái bê tông được cộng thêm chi phí khung đỡ + nhân công theo hệ số tăng dần theo quy mô.
+3. Ra ngay công suất (kWp), số tấm pin, diện tích mái cần, sản lượng điện và tiền tiết kiệm mỗi tháng, thời gian hoàn vốn ước tính.
+4. Bảng báo giá 7 hạng mục (tấm pin, inverter, khung giá đỡ, tủ điện/dây cáp, nhân công, thiết kế/hồ sơ, vận chuyển) — **sửa được số lượng và đơn giá từng dòng**, tự tính lại tổng, có tuỳ chọn VAT 0% / 8% / 10%.
+5. **In / Lưu PDF** (có sẵn ô ký tên hai bên, số báo giá, ngày lập, hiệu lực 15 ngày) để gửi khách qua Zalo, và **Xuất CSV** để lưu hồ sơ nội bộ.
+
+Giá mặc định trong bảng dựa trên khảo sát mặt bằng thị trường lắp đặt điện mặt trời áp mái tại Việt Nam thời điểm 8/2026 (suất đầu tư trọn gói giảm dần theo quy mô, khoảng 11,6 – 15,8 triệu đồng/kWp tuỳ cỡ hệ dưới 100kWp) — chỉ mang tính tham khảo ban đầu, cần đối chiếu báo giá thực tế từ nhà cung cấp trước khi chốt hợp đồng.
+
 ## Lưu dữ liệu
 
-Đây là công cụ tính toán tại chỗ (client-side) — **không lưu trữ dữ liệu** giữa các lần mở lại trang và không gửi bất kỳ thông tin nào lên máy chủ. Mỗi lần tải lại trang, các ô nhập sẽ về giá trị mặc định. Nếu cần lưu hồ sơ, dùng nút **"In / Lưu PDF"** hoặc **"Xuất CSV"** sau khi tính xong.
+Cả hai công cụ đều tính toán tại chỗ (client-side) — **không lưu trữ dữ liệu** giữa các lần mở lại trang và không gửi bất kỳ thông tin nào lên máy chủ. Mỗi lần tải lại trang, các ô nhập sẽ về giá trị mặc định. Nếu cần lưu hồ sơ, dùng nút **"In / Lưu PDF"** hoặc **"Xuất CSV"** sau khi tính xong.
 
 ## Công nghệ
 
-Một file HTML duy nhất — HTML, CSS thuần và JavaScript thuần (không framework, không build step, không phụ thuộc ngoài trừ Google Fonts). Mở bằng bất kỳ trình duyệt hiện đại nào.
+Mỗi công cụ là một file HTML độc lập — HTML, CSS thuần và JavaScript thuần (không framework, không build step, không phụ thuộc ngoài trừ Google Fonts). Mở bằng bất kỳ trình duyệt hiện đại nào, kể cả trên điện thoại.
 
 ## Đóng góp / chỉnh sửa
 
-Toàn bộ logic tính toán nằm trong thẻ `<script>` ở cuối file `index.html`, bảng tra cứu giả định theo quy mô nằm trong hằng số `TIERS`. Sửa trực tiếp file và mở lại trình duyệt để xem thay đổi — không cần build.
+Toàn bộ logic tính toán nằm trong thẻ `<script>` ở cuối mỗi file. `index.html` dùng bảng tra cứu `TIERS` theo tổng mức đầu tư; `bao-gia.html` dùng bảng `INVEST_TIERS` theo công suất kWp và bảng tỷ trọng chi phí `SHARE`. Sửa trực tiếp file và mở lại trình duyệt để xem thay đổi — không cần build.
 
 ## Liên hệ
 

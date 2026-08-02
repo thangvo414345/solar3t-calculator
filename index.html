@@ -578,8 +578,11 @@ function lookupTier(amount){
   for(const t of TIERS){ if(amount>=t.min && amount<t.max) return t; }
   return TIERS[TIERS.length-1];
 }
-const SELLBACK_PRICE = 1550;   // đ/kWh điện dư, tham khảo
-const SELLBACK_MAX   = 0.5;    // tối đa 50% theo Nghị định 243/2026/NĐ-CP
+// LƯU Ý: Nghị định 243/2026/NĐ-CP cho phép bán tối đa 50% điện dư về mặt PHÁP LÝ, nhưng cơ chế thu mua
+// thực tế qua EVN/Quỹ tại Nghệ An CHƯA triển khai (8/2026) — nên KHÔNG tính doanh thu bán điện dư vào
+// tư vấn khách hàng. SELLBACK_MAX chỉ dùng để hiển thị phần điện dư không dùng hết (dienDuThang), không quy ra tiền.
+const SELLBACK_PRICE = 1550;   // đ/kWh điện dư, tham khảo — HIỆN KHÔNG ÁP DỤNG vào phép tính lợi ích
+const SELLBACK_MAX   = 0.5;    // tối đa 50% theo Nghị định 243/2026/NĐ-CP (chỉ để tính phần dư không bán được)
 
 /* ---------------- formatting helpers ---------------- */
 function fmt(n){ return Math.round(n).toLocaleString('en-US') + ' đ'; }
@@ -667,10 +670,10 @@ function calculateSolar(){
   const sanLuongNam   = kWpActual * yieldPerKwp;
   const sanLuongThang = sanLuongNam / 12;
   const tyLeDu        = Math.min(1 - tudung, SELLBACK_MAX);
-  const tienDienThang = sanLuongThang * tudung * giadien;
-  const doanhThuDuThang = sanLuongThang * tyLeDu * SELLBACK_PRICE;
-  const tongLoiIchThang = tienDienThang + doanhThuDuThang;
-  const tongLoiIchNam   = tongLoiIchThang * 12;
+  const tienDienThang = sanLuongThang * tudung * giadien;   // tien tiet kiem THUC TE (chi phan tu dung)
+  const giaTriDienThang = sanLuongThang * giadien;           // gia tri TOAN BO san luong quy doi theo gia dien - so de "de nhan biet", so sanh voi hoa don khach dang tra
+  const dienDuThang    = sanLuongThang * tyLeDu;              // kWh du khong ban duoc (hien chua co co che mua ban)
+  const tienDienNam    = tienDienThang * 12;
   const tyTrongTam      = panelValue / tongMucDauTu;
 
   const vay     = tongMucDauTu * loanRatio;
@@ -681,8 +684,8 @@ function calculateSolar(){
     <div class="summary-item highlight"><div class="label">Số tấm pin (${panelW}W/tấm)</div><div class="value">${fmtInt(panelCount)} tấm</div></div>
     <div class="summary-item"><div class="label">Diện tích mái cần</div><div class="value">${fmtM2(area)}</div></div>
     <div class="summary-item"><div class="label">Tổng mức đầu tư</div><div class="value" style="font-size:16px">${fmt(tongMucDauTu)}</div></div>
-    <div class="summary-item gold"><div class="label">Tiền điện tiết kiệm/tháng</div><div class="value" style="font-size:16px">${fmt(tienDienThang)}</div></div>
-    <div class="summary-item gold"><div class="label">Tiền điện + bán dư/tháng</div><div class="value" style="font-size:16px">${fmt(tongLoiIchThang)}</div></div>
+    <div class="summary-item gold"><div class="label">Giá trị điện tạo ra/tháng</div><div class="value" style="font-size:16px">${fmt(giaTriDienThang)}</div></div>
+    <div class="summary-item gold"><div class="label">Tiền điện tiết kiệm/tháng (thực nhận)</div><div class="value" style="font-size:16px">${fmt(tienDienThang)}</div></div>
     <div class="summary-item"><div class="label">Vốn vay đề xuất (Quỹ BVMT)</div><div class="value" style="font-size:16px">${fmt(vay)}</div></div>
     <div class="summary-item"><div class="label">Vốn đối ứng khách hàng</div><div class="value" style="font-size:16px">${fmt(doiUng)}</div></div>
   `;
@@ -691,8 +694,12 @@ function calculateSolar(){
   document.getElementById('solarNote').innerHTML =
     `Phân khúc tham chiếu: <b>${tier.phankhuc}</b> · Giá trị tấm pin ≈ ${fmt(panelValue)} `+
     `(${fmtPct(tyTrongTam)} tổng mức đầu tư, phần còn lại là inverter, khung giá đỡ, dây điện/tủ điện, nhân công lắp đặt, đấu nối) · `+
-    `Sản lượng điện ước tính ${fmtInt(sanLuongNam)} kWh/năm, tỷ lệ tự dùng ${fmtPct(tudung)}, tỷ lệ điện dư bán ${fmtPct(tyLeDu)} `+
-    `(tối đa 50% theo Nghị định 243/2026/NĐ-CP) · Tổng lợi ích ước tính ${fmt(tongLoiIchNam)}/năm. `+
+    `Sản lượng điện ước tính ${fmtInt(sanLuongNam)} kWh/năm (${fmtInt(sanLuongThang)} kWh/tháng), tỷ lệ tự dùng ${fmtPct(tudung)} → `+
+    `<b>Giá trị điện tạo ra/tháng</b> (${fmt(giaTriDienThang)}) là quy đổi TOÀN BỘ sản lượng theo giá điện — dùng để so sánh nhanh với hoá đơn hiện tại của khách. `+
+    `<b>Tiền điện tiết kiệm/tháng</b> (${fmt(tienDienThang)}) là số tiền THỰC NHẬN, chỉ tính phần điện tự dùng ngay tại chỗ. `+
+    `Phần điện dư còn lại (${fmtPct(tyLeDu)}, ≈${fmtInt(dienDuThang)} kWh/tháng) <b>hiện chưa bán được</b> — dù Nghị định 243/2026/NĐ-CP cho phép bán tối đa 50% điện dư về mặt pháp lý, `+
+    `cơ chế thu mua thực tế qua EVN/Quỹ tại Nghệ An chưa triển khai, nên KHÔNG đưa vào cam kết lợi ích với khách hàng — chỉ tư vấn dựa trên mức tiết kiệm tự dùng thực tế ở trên. `+
+    `Tổng tiết kiệm thực tế ước tính ${fmt(tienDienNam)}/năm. `+
     `Số liệu là ước tính minh hoạ theo giả định thị trường tham khảo 8/2026 — cần khảo sát thực tế (bức xạ, kết cấu mái, phụ tải) `+
     `và báo giá chính thức từ đối tác thi công trước khi chốt hợp đồng.`;
 
@@ -703,7 +710,7 @@ function calculateSolar(){
 
   window._solarData = {
     kWp:kWpActual, panelCount, panelW, area, tongMucDauTu, vay, doiUng,
-    tienDienThang, tongLoiIchThang, tongLoiIchNam, giadien, tudung, tyLeDu, tier
+    tienDienThang, giaTriDienThang, tienDienNam, giadien, tudung, tyLeDu, dienDuThang, tier
   };
 
   document.getElementById('solarResults').style.display = 'block';

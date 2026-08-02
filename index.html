@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bảng tính quy mô điện mặt trời &amp; vay vốn ưu đãi — Quỹ BVMT Nghệ An</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#20261F;
+    --paper:#F6F3EA;
+    --paper-2:#EFEADB;
+    --forest:#1C4B33;
+    --forest-2:#28603F;
+    --gold:#B8892B;
+    --seal:#9A2B2B;
+    --line:#D8D0BC;
+    --muted:#6B6656;
+    --white:#FFFDF8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:40px 24px 80px;}
+
+  /* HEADER */
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:24px;
+    border-bottom:2px solid var(--forest);
+    padding-bottom:24px;
+    margin-bottom:32px;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--forest-2);
+    margin-bottom:8px;
+  }
+  h1{
+    font-family:'Source Serif 4',serif;
+    font-weight:700;
+    font-size:32px;
+    margin:0 0 6px;
+    line-height:1.15;
+    color:var(--forest);
+  }
+  header p{margin:0;color:var(--muted);font-size:14px;max-width:50ch;}
+
+  .seal{
+    flex-shrink:0;
+    width:104px;height:104px;
+    border-radius:50%;
+    border:2.5px solid var(--seal);
+    display:flex;align-items:center;justify-content:center;
+    text-align:center;
+    color:var(--seal);
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    line-height:1.35;
+    font-weight:700;
+    letter-spacing:.02em;
+    transform:rotate(-6deg);
+    position:relative;
+    opacity:.92;
+  }
+  .seal::before{
+    content:"";
+    position:absolute;inset:6px;
+    border:1px dashed var(--seal);
+    border-radius:50%;
+    opacity:.6;
+  }
+
+  /* SECTION CARD */
+  .card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:28px;
+    margin-bottom:24px;
+  }
+  .card h2{
+    font-family:'Source Serif 4',serif;
+    font-size:18px;
+    font-weight:600;
+    margin:0 0 4px;
+    color:var(--forest);
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  .card h2 .n{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--gold);
+    font-weight:700;
+  }
+  .card .sub{color:var(--muted);font-size:13px;margin:0 0 20px;}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .grid.g3{grid-template-columns:1fr 1fr 1fr;}
+  @media (max-width:640px){.grid,.grid.g3{grid-template-columns:1fr;}}
+
+  label{
+    display:block;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--ink);
+    margin-bottom:6px;
+  }
+  label .opt{color:var(--muted);font-weight:400;font-style:italic;}
+  input[type=text],input[type=tel],input[type=number],select{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    background:var(--paper);
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    color:var(--ink);
+  }
+  input:focus,select:focus{
+    outline:none;
+    border-color:var(--forest-2);
+    background:var(--white);
+  }
+  .field{margin-bottom:16px;}
+
+  .rate-presets{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+  .rate-btn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    padding:6px 12px;
+    border:1px solid var(--forest-2);
+    color:var(--forest-2);
+    background:transparent;
+    border-radius:20px;
+    cursor:pointer;
+    transition:all .15s;
+  }
+  .rate-btn:hover{background:var(--forest-2);color:var(--white);}
+  .rate-btn.active{background:var(--forest-2);color:var(--white);}
+
+  .method-toggle{display:flex;gap:10px;margin-bottom:4px;}
+  .method-card{
+    flex:1;
+    border:1.5px solid var(--line);
+    border-radius:4px;
+    padding:14px 16px;
+    cursor:pointer;
+    transition:all .15s;
+  }
+  .method-card.active{
+    border-color:var(--forest);
+    background:#EFF4EE;
+  }
+  .method-card .m-title{font-weight:700;font-size:13.5px;color:var(--forest);margin-bottom:3px;}
+  .method-card .m-desc{font-size:12px;color:var(--muted);line-height:1.4;}
+  @media (max-width:640px){.method-toggle{flex-direction:column;}}
+
+  .calc-btn{
+    width:100%;
+    background:var(--forest);
+    color:var(--white);
+    border:none;
+    padding:15px;
+    font-size:15px;
+    font-weight:600;
+    border-radius:3px;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+    letter-spacing:.01em;
+    transition:background .15s;
+    margin-top:8px;
+  }
+  .calc-btn:hover{background:var(--forest-2);}
+  .calc-btn.secondary-tone{background:var(--gold);}
+  .calc-btn.secondary-tone:hover{background:#a3781f;}
+
+  /* ADVANCED DETAILS */
+  details.adv{
+    margin:16px 0 4px;
+    border-top:1px dashed var(--line);
+    padding-top:12px;
+  }
+  details.adv summary{
+    cursor:pointer;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--forest-2);
+    font-weight:700;
+    list-style:none;
+    letter-spacing:.02em;
+  }
+  details.adv summary::-webkit-details-marker{display:none;}
+  details.adv summary::before{content:"▸ ";}
+  details.adv[open] summary::before{content:"▾ ";}
+  details.adv .adv-body{margin-top:16px;}
+  details.adv .adv-note{font-size:12px;color:var(--muted);margin:10px 0 0;line-height:1.5;}
+
+  /* RESULTS */
+  #results,#solarResults{display:none;}
+  .summary-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    margin-bottom:24px;
+  }
+  @media (max-width:640px){.summary-grid{grid-template-columns:1fr 1fr;}}
+  .summary-item{background:var(--white);padding:18px 16px;}
+  .summary-item .label{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--muted);
+    margin-bottom:6px;
+    font-weight:600;
+  }
+  .summary-item .value{
+    font-family:'JetBrains Mono',monospace;
+    font-size:19px;
+    font-weight:700;
+    color:var(--forest);
+  }
+  .summary-item.highlight{background:var(--forest);}
+  .summary-item.highlight .label{color:#CFE0D5;}
+  .summary-item.highlight .value{color:var(--white);}
+  .summary-item.gold .label{color:#8a6a26;}
+  .summary-item.gold .value{color:var(--gold);}
+  .summary-item.warn{background:#F4EBE3;}
+  .summary-item.warn .value{color:var(--seal);}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead th{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    text-align:right;
+    padding:10px 12px;
+    background:var(--forest);
+    color:var(--white);
+    position:sticky;top:0;
+  }
+  thead th:first-child,thead th:nth-child(2){text-align:left;}
+  tbody td{
+    padding:8px 12px;
+    text-align:right;
+    font-family:'JetBrains Mono',monospace;
+    border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  tbody td:first-child{text-align:left;font-weight:600;color:var(--forest);}
+  tbody td:nth-child(2){text-align:left;font-family:'Inter',sans-serif;color:var(--muted);font-size:12px;}
+  tbody tr:nth-child(even){background:#FAF8F1;}
+  tbody tr.year-end td{border-bottom:2px solid var(--gold);}
+  .table-scroll{
+    max-height:480px;
+    overflow-y:auto;
+    border:1px solid var(--line);
+    border-radius:4px;
+  }
+
+  .actions{display:flex;gap:10px;margin:20px 0 8px;}
+  .btn-secondary{
+    flex:1;
+    background:var(--white);
+    border:1.5px solid var(--forest);
+    color:var(--forest);
+    padding:12px;
+    font-weight:600;
+    font-size:13.5px;
+    border-radius:3px;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+  }
+  .btn-secondary:hover{background:#EFF4EE;}
+
+  .cust-recap{
+    font-size:13px;
+    color:var(--muted);
+    background:var(--paper-2);
+    border-left:3px solid var(--gold);
+    padding:12px 16px;
+    margin-bottom:20px;
+    border-radius:0 3px 3px 0;
+  }
+  .cust-recap b{color:var(--ink);}
+
+  .note-box{
+    font-size:12.5px;
+    color:var(--muted);
+    background:var(--paper-2);
+    border-left:3px solid var(--forest-2);
+    padding:12px 16px;
+    margin:16px 0 0;
+    border-radius:0 3px 3px 0;
+    line-height:1.55;
+  }
+
+  .cashflow-line{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 0;
+    border-bottom:1px solid var(--line);
+    font-size:14px;
+  }
+  .cashflow-line:last-child{border-bottom:none;}
+  .cashflow-line .cf-label{color:var(--muted);}
+  .cashflow-line .cf-value{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--forest);}
+  .cashflow-line.total{padding-top:16px;margin-top:4px;border-top:2px solid var(--forest);}
+  .cashflow-line.total .cf-value{font-size:18px;}
+  .cashflow-line.total .cf-value.positive{color:var(--forest);}
+  .cashflow-line.total .cf-value.negative{color:var(--seal);}
+
+  footer{text-align:center;font-size:11.5px;color:var(--muted);margin-top:40px;font-family:'JetBrains Mono',monospace;}
+
+  @media print{
+    body{background:white;}
+    .no-print{display:none !important;}
+    .card{border:none;box-shadow:none;}
+    .table-scroll{max-height:none;overflow:visible;border:none;}
+    thead th{position:static;}
+    details.adv{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="eyebrow">SOLAR 3T NGHỆ AN · ĐT 0977 687 227 · Công cụ nội bộ</div>
+      <h1>Bảng tính quy mô hệ &amp; vay vốn ưu đãi</h1>
+      <p>Nhập ngân sách hoặc hoá đơn tiền điện → ra công suất (kWp), số tấm pin, diện tích mái, tiền điện tiết kiệm mỗi tháng — rồi tính luôn lịch trả gốc &amp; lãi vay ưu đãi từ Quỹ Bảo vệ môi trường Nghệ An.</p>
+    </div>
+    <div class="seal">QUỸ BVMT<br>NGHỆ AN<br>★<br>1,5%/NĂM</div>
+  </header>
+
+  <!-- SECTION 1: CUSTOMER -->
+  <div class="card">
+    <h2><span class="n">01</span> Thông tin người vay</h2>
+    <p class="sub">Đứng tên hồ sơ vay — điền để lưu cùng bảng tính khi in/xuất.</p>
+    <div class="grid">
+      <div class="field">
+        <label>Họ và tên</label>
+        <input type="text" id="custName" placeholder="Nguyễn Văn A">
+      </div>
+      <div class="field">
+        <label>Số điện thoại</label>
+        <input type="tel" id="custPhone" placeholder="09xx xxx xxx">
+      </div>
+    </div>
+    <div class="grid">
+      <div class="field">
+        <label>Địa chỉ</label>
+        <input type="text" id="custAddr" placeholder="Xã/phường, huyện, Nghệ An">
+      </div>
+      <div class="field">
+        <label>Số CCCD <span class="opt">(tạm thời không bắt buộc)</span></label>
+        <input type="text" id="custId" placeholder="Có thể bổ sung sau">
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label>Ghi chú công trình <span class="opt">(vd: hệ điện mặt trời áp mái — nhà hàng anh Phong)</span></label>
+      <input type="text" id="custNote" placeholder="Mục đích vay / công trình lắp đặt">
+    </div>
+  </div>
+
+  <!-- SECTION 2: SOLAR SYSTEM SIZING -->
+  <div class="card">
+    <h2><span class="n">02</span> Quy mô hệ thống điện mặt trời</h2>
+    <p class="sub">Chọn 1 trong 2 cách nhập bên dưới — hệ thống tự tính công suất (kWp), số tấm pin, diện tích mái cần thiết và tiền điện tạo ra mỗi tháng. Mặc định tính cho hệ <b>hoà lưới bám tải, không lưu trữ</b> (on-grid, không có pin lưu điện) — loại phổ biến nhất; hệ có lưu trữ (hybrid/off-grid) có suất đầu tư cao hơn đáng kể, cần báo giá riêng.</p>
+
+    <div class="method-toggle">
+      <div class="method-card active" id="sizeModeBudgetCard" onclick="setSizeMode('budget')">
+        <div class="m-title">Theo ngân sách đầu tư</div>
+        <div class="m-desc">Đã biết số tiền định đầu tư — hệ thống tính ra quy mô phù hợp với số tiền đó.</div>
+      </div>
+      <div class="method-card" id="sizeModeBillCard" onclick="setSizeMode('bill')">
+        <div class="m-title">Theo hoá đơn tiền điện</div>
+        <div class="m-desc">Chỉ biết hoá đơn tiền điện hàng tháng hiện tại — hệ thống gợi ý quy mô để bù phần lớn hoá đơn đó.</div>
+      </div>
+    </div>
+
+    <div id="sizeModeBudgetFields" style="margin-top:18px;">
+      <div class="field">
+        <label>Tổng mức đầu tư dự kiến (VNĐ)</label>
+        <input type="text" id="investAmount" value="1,000,000,000" inputmode="numeric">
+      </div>
+    </div>
+
+    <div id="sizeModeBillFields" style="display:none;margin-top:18px;">
+      <div class="grid">
+        <div class="field">
+          <label>Hoá đơn tiền điện hiện tại/tháng (VNĐ)</label>
+          <input type="text" id="billAmount" value="3,000,000" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label>Giá điện hiện tại bình quân (đ/kWh)</label>
+          <input type="text" id="billPrice" value="3,000" inputmode="numeric">
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>Tỷ lệ tự tiêu thụ mong muốn (%) <span class="opt">— phần điện dùng trực tiếp, chưa tính điện bán dư</span></label>
+        <input type="number" id="billSelfUse" value="80" step="1" min="10" max="100" style="max-width:160px">
+      </div>
+    </div>
+
+    <details class="adv">
+      <summary>⚙ Tuỳ chỉnh giả định kỹ thuật &amp; tài chính (không bắt buộc)</summary>
+      <div class="adv-body">
+        <div class="grid g3">
+          <div class="field"><label>Suất đầu tư (đ/kWp)</label><input type="text" id="suatDauTu" value="13,000,000" inputmode="numeric"></div>
+          <div class="field"><label>Tỷ lệ tự tiêu thụ (%) <span class="opt">chế độ ngân sách</span></label><input type="number" id="selfUsePct" value="75" step="1" min="10" max="100"></div>
+          <div class="field"><label>Giá điện tiết kiệm (đ/kWh) <span class="opt">chế độ ngân sách</span></label><input type="text" id="elecPrice" value="2,900" inputmode="numeric"></div>
+          <div class="field"><label>Công suất 1 tấm pin (W)</label><input type="number" id="panelW" value="620" step="5" min="100"></div>
+          <div class="field"><label>Giá 1 tấm pin (VNĐ)</label><input type="text" id="panelPrice" value="2,500,000" inputmode="numeric"></div>
+          <div class="field"><label>Diện tích 1 tấm pin (m²)</label><input type="number" id="panelArea" value="2.6" step="0.1" min="1"></div>
+          <div class="field"><label>Hệ số diện tích lắp đặt <span class="opt">khoảng cách, kết cấu, lối đi</span></label><input type="number" id="areaFactor" value="1.3" step="0.05" min="1"></div>
+          <div class="field"><label>Sản lượng bình quân (kWh/kWp/năm)</label><input type="number" id="yieldPerKwp" value="1450" step="10" min="800"></div>
+          <div class="field"><label>Tỷ lệ vốn vay Quỹ BVMT (%)</label><input type="number" id="loanRatioPct" value="70" step="5" min="0" max="100"></div>
+        </div>
+        <p class="adv-note">Các ô "Suất đầu tư", "Tỷ lệ tự tiêu thụ" và "Giá điện" được gợi ý tự động lại theo quy mô mỗi lần bấm tính (dựa trên bảng tra cứu theo khoảng vốn đầu tư) — gõ đè nếu đã có số liệu khảo sát hoặc báo giá thực tế từ đối tác thi công.</p>
+        <div style="margin-top:14px;overflow-x:auto;border:1px solid var(--line);border-radius:4px;">
+          <table style="font-size:12px;">
+            <thead><tr>
+              <th style="text-align:left">Quy mô đầu tư</th>
+              <th>Suất đầu tư bình quân (đ/kWp)</th>
+              <th>Giá điện bình quân (đ/kWh)</th>
+              <th>Tỷ lệ tự dùng</th>
+            </tr></thead>
+            <tbody>
+              <tr><td style="text-align:left;font-weight:600;color:var(--forest)">Dưới 300 triệu (hộ dân)</td><td style="text-align:right">15.000.000</td><td style="text-align:right">2.900</td><td style="text-align:right">65%</td></tr>
+              <tr><td style="text-align:left;font-weight:600;color:var(--forest)">300 – 700 triệu</td><td style="text-align:right">14.000.000</td><td style="text-align:right">3.000</td><td style="text-align:right">70%</td></tr>
+              <tr><td style="text-align:left;font-weight:600;color:var(--forest)">700 – 900 triệu</td><td style="text-align:right">13.500.000</td><td style="text-align:right">3.200</td><td style="text-align:right">80%</td></tr>
+              <tr><td style="text-align:left;font-weight:600;color:var(--forest)">900 triệu – 1,5 tỷ</td><td style="text-align:right">13.000.000</td><td style="text-align:right">2.900</td><td style="text-align:right">65%</td></tr>
+              <tr><td style="text-align:left;font-weight:600;color:var(--forest)">1,5 – 3 tỷ</td><td style="text-align:right">12.500.000</td><td style="text-align:right">2.800</td><td style="text-align:right">75%</td></tr>
+              <tr><td style="text-align:left;font-weight:600;color:var(--forest)">3 – 7 tỷ</td><td style="text-align:right">12.000.000</td><td style="text-align:right">2.750</td><td style="text-align:right">85%</td></tr>
+              <tr><td style="text-align:left;font-weight:600;color:var(--forest)">Trên 7 tỷ (nhà máy, KCN)</td><td style="text-align:right">12.000.000</td><td style="text-align:right">2.700</td><td style="text-align:right">90%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="adv-note">Bảng tra cứu trên là giả định thị trường tham khảo 8/2026, dùng chung cho hệ hoà lưới bám tải không lưu trữ. Giá điện bình quân dao động 2.700–3.200 đ/kWh tuỳ quy mô/đối tượng khách hàng (giá sinh hoạt bậc cao và giá kinh doanh dịch vụ thường cao hơn giá công nghiệp).</p>
+      </div>
+    </details>
+
+    <button class="calc-btn" onclick="calculateSolar()">Tính quy mô hệ thống</button>
+  </div>
+
+  <!-- SOLAR RESULTS -->
+  <div id="solarResults">
+    <div class="summary-grid" id="solarSummaryGrid"></div>
+    <p class="note-box" id="solarNote"></p>
+  </div>
+
+  <!-- SECTION 3: LOAN -->
+  <div class="card">
+    <h2><span class="n">03</span> Thông tin khoản vay</h2>
+    <p class="sub">Theo Quyết định 02/QĐ-HĐQL ngày 09/02/2026 — 1,5%/năm cho dự án năng lượng sạch/tái tạo, 2,6%/năm cho dự án khác.</p>
+
+    <div class="grid">
+      <div class="field">
+        <label>Số tiền vay (VNĐ) <span class="opt">tự điền = 70% tổng mức đầu tư sau khi tính quy mô hệ thống ở Mục 02, có thể sửa tay</span></label>
+        <input type="text" id="loanAmount" value="500,000,000" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label>Kỳ hạn vay</label>
+        <select id="loanTerm">
+          <option value="2">2 năm</option>
+          <option value="3">3 năm</option>
+          <option value="4">4 năm</option>
+          <option value="5" selected>5 năm</option>
+          <option value="6">6 năm</option>
+          <option value="7">7 năm</option>
+          <option value="8">8 năm</option>
+          <option value="9">9 năm</option>
+          <option value="10">10 năm</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Lãi suất (%/năm)</label>
+      <input type="number" id="loanRate" value="1.5" step="0.1" min="0" style="max-width:160px">
+      <div class="rate-presets">
+        <button class="rate-btn active" data-rate="1.5" type="button">1,5%/năm — dự án NLTT</button>
+        <button class="rate-btn" data-rate="2.6" type="button">2,6%/năm — dự án khác</button>
+      </div>
+    </div>
+
+    <div class="field" style="margin-bottom:8px">
+      <label style="margin-bottom:10px">Hình thức trả nợ</label>
+      <div class="method-toggle">
+        <div class="method-card active" id="methodDecliningCard" onclick="setMethod('declining')">
+          <div class="m-title">Dư nợ giảm dần</div>
+          <div class="m-desc">Trả gốc đều mỗi tháng, lãi tính trên dư nợ còn lại → tiền trả tháng đầu cao nhất, giảm dần về sau.</div>
+        </div>
+        <div class="method-card" id="methodAnnuityCard" onclick="setMethod('annuity')">
+          <div class="m-title">Trả đều hàng tháng</div>
+          <div class="m-desc">Gốc + lãi gộp thành số tiền cố định mỗi tháng, giống trả góp ngân hàng thông thường.</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="calc-btn" onclick="calculate()">Tính bảng trả nợ</button>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results">
+    <div class="cust-recap" id="custRecap"></div>
+
+    <div class="summary-grid" id="summaryGrid"></div>
+
+    <div class="card" id="cashflowCompareCard" style="display:none;">
+      <h2><span class="n">★</span> So sánh dòng tiền hàng tháng</h2>
+      <p class="sub">Đối chiếu tiền điện tiết kiệm được (Mục 02) với số tiền phải trả nợ trung bình mỗi tháng (Mục 03).</p>
+      <div id="cashflowCompareBody"></div>
+    </div>
+
+    <div class="card no-print" style="padding:16px 20px;">
+      <div class="actions" style="margin:0">
+        <button class="btn-secondary" onclick="window.print()">🖨️ In / Lưu PDF</button>
+        <button class="btn-secondary" onclick="exportCSV()">⬇️ Xuất CSV</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="n">04</span> Lịch trả nợ chi tiết</h2>
+      <p class="sub">Theo tháng — dòng viền vàng đánh dấu cuối mỗi năm.</p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Tháng</th><th>Kỳ</th><th>Dư nợ đầu kỳ</th><th>Trả gốc</th><th>Trả lãi</th><th>Tổng trả</th><th>Dư nợ cuối kỳ</th>
+            </tr>
+          </thead>
+          <tbody id="scheduleBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer>SOLAR 3T NGHỆ AN · NGHI PHÚ, VINH, NGHỆ AN · ĐT: 0977 687 227 · CÔNG CỤ NỘI BỘ, CHỈ MANG TÍNH THAM KHẢO — CẦN KHẢO SÁT THỰC TẾ VÀ BÁO GIÁ CHÍNH THỨC TRƯỚC KHI CHỐT HỢP ĐỒNG</footer>
+</div>
+
+<script>
+/* =========================================================================
+   BẢNG TRA CỨU GIẢ ĐỊNH THEO QUY MÔ ĐẦU TƯ
+   (đồng bộ với bảng tính Excel & phương án kinh doanh — cập nhật 8/2026)
+   ========================================================================= */
+const TIERS = [
+  {min:0,          max:300e6,     suat:15_000_000, tudung:0.65, giadien:2900, phankhuc:"Hộ dân"},
+  {min:300e6,      max:700e6,     suat:14_000_000, tudung:0.70, giadien:3000, phankhuc:"Hộ kinh doanh / hộ dân lớn"},
+  {min:700e6,      max:900e6,     suat:13_500_000, tudung:0.80, giadien:3200, phankhuc:"Nhà hàng, khách sạn nhỏ"},
+  {min:900e6,      max:1.5e9,     suat:13_000_000, tudung:0.65, giadien:2900, phankhuc:"Trường học, cơ quan nhỏ"},
+  {min:1.5e9,      max:3e9,       suat:12_500_000, tudung:0.75, giadien:2800, phankhuc:"Trụ sở, cơ quan, kho vừa"},
+  {min:3e9,        max:7e9,       suat:12_000_000, tudung:0.85, giadien:2750, phankhuc:"Kho xưởng, trường học lớn"},
+  {min:7e9,        max:Infinity,  suat:12_000_000, tudung:0.90, giadien:2700, phankhuc:"Nhà máy, khu công nghiệp"},
+];
+function lookupTier(amount){
+  for(const t of TIERS){ if(amount>=t.min && amount<t.max) return t; }
+  return TIERS[TIERS.length-1];
+}
+const SELLBACK_PRICE = 1550;   // đ/kWh điện dư, tham khảo
+const SELLBACK_MAX   = 0.5;    // tối đa 50% theo Nghị định 243/2026/NĐ-CP
+
+/* ---------------- formatting helpers ---------------- */
+function fmt(n){ return Math.round(n).toLocaleString('en-US') + ' đ'; }
+function fmtInt(n){ return Math.round(n).toLocaleString('en-US'); }
+function fmtKwp(n){ return n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' kWp'; }
+function fmtM2(n){ return n.toLocaleString('en-US',{minimumFractionDigits:1,maximumFractionDigits:1}) + ' m²'; }
+function fmtPct(n){ return (n*100).toLocaleString('en-US',{minimumFractionDigits:1,maximumFractionDigits:1}) + '%'; }
+function num(id){ return Number((document.getElementById(id).value||'').replace(/[^\d]/g,'')) || 0; }
+function attachThousands(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.addEventListener('input', (e)=>{
+    let raw = e.target.value.replace(/[^\d]/g,'');
+    if(raw === ''){ e.target.value=''; return; }
+    e.target.value = Number(raw).toLocaleString('en-US');
+  });
+}
+['investAmount','billAmount','billPrice','suatDauTu','elecPrice','panelPrice','loanAmount'].forEach(attachThousands);
+
+/* ================= SECTION 02 — SOLAR SIZING ================= */
+let currentSizeMode = 'budget';
+function setSizeMode(m){
+  currentSizeMode = m;
+  document.getElementById('sizeModeBudgetCard').classList.toggle('active', m==='budget');
+  document.getElementById('sizeModeBillCard').classList.toggle('active', m==='bill');
+  document.getElementById('sizeModeBudgetFields').style.display = m==='budget' ? 'block' : 'none';
+  document.getElementById('sizeModeBillFields').style.display = m==='bill' ? 'block' : 'none';
+}
+
+function calculateSolar(){
+  const panelW      = Number(document.getElementById('panelW').value) || 620;
+  const panelPrice   = num('panelPrice');
+  const panelArea    = Number(document.getElementById('panelArea').value) || 2.6;
+  const areaFactor   = Number(document.getElementById('areaFactor').value) || 1.3;
+  const yieldPerKwp  = Number(document.getElementById('yieldPerKwp').value) || 1450;
+  const loanRatio    = (Number(document.getElementById('loanRatioPct').value) || 70) / 100;
+
+  let tongMucDauTu, tudung, giadien, kWpRaw, tier;
+
+  if(currentSizeMode === 'budget'){
+    tongMucDauTu = num('investAmount');
+    if(!tongMucDauTu || tongMucDauTu < 1000000){
+      alert('Vui lòng nhập tổng mức đầu tư hợp lệ (tối thiểu khoảng 1.000.000 đồng).');
+      return;
+    }
+    tier = lookupTier(tongMucDauTu);
+    document.getElementById('suatDauTu').value = tier.suat.toLocaleString('en-US');
+    document.getElementById('selfUsePct').value = Math.round(tier.tudung*100);
+    document.getElementById('elecPrice').value = tier.giadien.toLocaleString('en-US');
+    const suat = num('suatDauTu') || tier.suat;
+    kWpRaw = tongMucDauTu / suat;
+  } else {
+    const billAmt   = num('billAmount');
+    const billPrice = num('billPrice') || 3000;
+    const selfUseWanted = (Number(document.getElementById('billSelfUse').value) || 80) / 100;
+    if(!billAmt || billAmt < 50000){
+      alert('Vui lòng nhập hoá đơn tiền điện hàng tháng hợp lệ.');
+      return;
+    }
+    const kwhThang = billAmt / billPrice;
+    kWpRaw = kwhThang / ((yieldPerKwp/12) * selfUseWanted);
+    // uoc luong tam thoi de tra bang tier, se tinh lai suat dau tu chinh xac sau khi lam tron so tam
+    tier = lookupTier(kWpRaw * 13_000_000);
+    document.getElementById('suatDauTu').value = tier.suat.toLocaleString('en-US');
+    document.getElementById('selfUsePct').value = Math.round(selfUseWanted*100);
+    document.getElementById('elecPrice').value = billPrice.toLocaleString('en-US');
+  }
+
+  // lam tron theo so tam pin nguyen
+  const panelCount = Math.max(1, Math.ceil(kWpRaw*1000/panelW));
+  const kWpActual  = panelCount*panelW/1000;
+  const panelValue = panelCount*panelPrice;
+  const area       = panelCount*panelArea*areaFactor;
+
+  if(currentSizeMode === 'budget'){
+    tudung  = (Number(document.getElementById('selfUsePct').value) || 75) / 100;
+    giadien = num('elecPrice');
+  } else {
+    tudung  = (Number(document.getElementById('billSelfUse').value) || 80) / 100;
+    giadien = num('billPrice') || 3000;
+    const suat = num('suatDauTu') || tier.suat;
+    tongMucDauTu = kWpActual * suat;
+  }
+
+  const sanLuongNam   = kWpActual * yieldPerKwp;
+  const sanLuongThang = sanLuongNam / 12;
+  const tyLeDu        = Math.min(1 - tudung, SELLBACK_MAX);
+  const tienDienThang = sanLuongThang * tudung * giadien;
+  const doanhThuDuThang = sanLuongThang * tyLeDu * SELLBACK_PRICE;
+  const tongLoiIchThang = tienDienThang + doanhThuDuThang;
+  const tongLoiIchNam   = tongLoiIchThang * 12;
+  const tyTrongTam      = panelValue / tongMucDauTu;
+
+  const vay     = tongMucDauTu * loanRatio;
+  const doiUng  = tongMucDauTu - vay;
+
+  const html = `
+    <div class="summary-item highlight"><div class="label">Công suất hệ thống</div><div class="value">${fmtKwp(kWpActual)}</div></div>
+    <div class="summary-item highlight"><div class="label">Số tấm pin (${panelW}W/tấm)</div><div class="value">${fmtInt(panelCount)} tấm</div></div>
+    <div class="summary-item"><div class="label">Diện tích mái cần</div><div class="value">${fmtM2(area)}</div></div>
+    <div class="summary-item"><div class="label">Tổng mức đầu tư</div><div class="value" style="font-size:16px">${fmt(tongMucDauTu)}</div></div>
+    <div class="summary-item gold"><div class="label">Tiền điện tiết kiệm/tháng</div><div class="value" style="font-size:16px">${fmt(tienDienThang)}</div></div>
+    <div class="summary-item gold"><div class="label">Tiền điện + bán dư/tháng</div><div class="value" style="font-size:16px">${fmt(tongLoiIchThang)}</div></div>
+    <div class="summary-item"><div class="label">Vốn vay đề xuất (Quỹ BVMT)</div><div class="value" style="font-size:16px">${fmt(vay)}</div></div>
+    <div class="summary-item"><div class="label">Vốn đối ứng khách hàng</div><div class="value" style="font-size:16px">${fmt(doiUng)}</div></div>
+  `;
+  document.getElementById('solarSummaryGrid').innerHTML = html;
+
+  document.getElementById('solarNote').innerHTML =
+    `Phân khúc tham chiếu: <b>${tier.phankhuc}</b> · Giá trị tấm pin ≈ ${fmt(panelValue)} `+
+    `(${fmtPct(tyTrongTam)} tổng mức đầu tư, phần còn lại là inverter, khung giá đỡ, dây điện/tủ điện, nhân công lắp đặt, đấu nối) · `+
+    `Sản lượng điện ước tính ${fmtInt(sanLuongNam)} kWh/năm, tỷ lệ tự dùng ${fmtPct(tudung)}, tỷ lệ điện dư bán ${fmtPct(tyLeDu)} `+
+    `(tối đa 50% theo Nghị định 243/2026/NĐ-CP) · Tổng lợi ích ước tính ${fmt(tongLoiIchNam)}/năm. `+
+    `Số liệu là ước tính minh hoạ theo giả định thị trường tham khảo 8/2026 — cần khảo sát thực tế (bức xạ, kết cấu mái, phụ tải) `+
+    `và báo giá chính thức từ đối tác thi công trước khi chốt hợp đồng.`;
+
+  // tu dong dien vao Muc 03 - khoan vay
+  document.getElementById('loanAmount').value = Math.round(vay).toLocaleString('en-US');
+  document.querySelectorAll('.rate-btn').forEach(b=>b.classList.toggle('active', b.dataset.rate==='1.5'));
+  document.getElementById('loanRate').value = 1.5;
+
+  window._solarData = {
+    kWp:kWpActual, panelCount, panelW, area, tongMucDauTu, vay, doiUng,
+    tienDienThang, tongLoiIchThang, tongLoiIchNam, giadien, tudung, tyLeDu, tier
+  };
+
+  document.getElementById('solarResults').style.display = 'block';
+  document.getElementById('solarResults').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+/* ================= SECTION 03 — LOAN (giu nguyen logic goc) ================= */
+let currentMethod = 'declining';
+
+function setMethod(m){
+  currentMethod = m;
+  document.getElementById('methodDecliningCard').classList.toggle('active', m==='declining');
+  document.getElementById('methodAnnuityCard').classList.toggle('active', m==='annuity');
+}
+
+document.querySelectorAll('.rate-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.rate-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('loanRate').value = btn.dataset.rate;
+  });
+});
+
+const amountInput = document.getElementById('loanAmount');
+
+function calculate(){
+  const principal = num('loanAmount');
+  const years = Number(document.getElementById('loanTerm').value);
+  const annualRate = Number(document.getElementById('loanRate').value);
+  if(!principal || principal<=0){ alert('Vui lòng nhập số tiền vay hợp lệ.'); return; }
+
+  const months = years*12;
+  const monthlyRate = annualRate/100/12;
+
+  let schedule = [];
+  let balance = principal;
+  let totalInterest = 0;
+
+  if(currentMethod === 'declining'){
+    const principalPortion = principal/months;
+    for(let m=1; m<=months; m++){
+      const interest = balance*monthlyRate;
+      const total = principalPortion + interest;
+      const endBalance = balance - principalPortion;
+      schedule.push({m, opening:balance, principal:principalPortion, interest, total, closing:Math.max(endBalance,0)});
+      totalInterest += interest;
+      balance = endBalance;
+    }
+  } else {
+    const pmt = monthlyRate===0 ? principal/months : principal*monthlyRate/(1-Math.pow(1+monthlyRate,-months));
+    for(let m=1; m<=months; m++){
+      const interest = balance*monthlyRate;
+      const principalPortion = pmt - interest;
+      const endBalance = balance - principalPortion;
+      schedule.push({m, opening:balance, principal:principalPortion, interest, total:pmt, closing:Math.max(endBalance,0)});
+      totalInterest += interest;
+      balance = endBalance;
+    }
+  }
+
+  renderResults(principal, years, annualRate, schedule, totalInterest);
+}
+
+function renderResults(principal, years, annualRate, schedule, totalInterest){
+  const name = document.getElementById('custName').value || '(chưa nhập tên)';
+  const phone = document.getElementById('custPhone').value;
+  const addr = document.getElementById('custAddr').value;
+  const note = document.getElementById('custNote').value;
+
+  let recap = `<b>${name}</b>`;
+  if(phone) recap += ` · ĐT: ${phone}`;
+  if(addr) recap += ` · ${addr}`;
+  if(note) recap += `<br>Công trình: ${note}`;
+  if(window._solarData){
+    const sd = window._solarData;
+    recap += `<br>Hệ ${fmtKwp(sd.kWp)} · ${fmtInt(sd.panelCount)} tấm pin · ${fmtM2(sd.area)} mái`;
+  }
+  document.getElementById('custRecap').innerHTML = recap;
+
+  const totalPay = principal + totalInterest;
+  const first = schedule[0];
+  const last = schedule[schedule.length-1];
+  const monthlyAvg = totalPay/schedule.length;
+  const methodLabel = currentMethod==='declining' ? 'Dư nợ giảm dần' : 'Trả đều hàng tháng';
+
+  const summaryHTML = `
+    <div class="summary-item"><div class="label">Số tiền vay</div><div class="value">${fmt(principal)}</div></div>
+    <div class="summary-item"><div class="label">Kỳ hạn</div><div class="value">${years} năm · ${annualRate}%/năm</div></div>
+    <div class="summary-item"><div class="label">Tổng lãi phải trả</div><div class="value">${fmt(totalInterest)}</div></div>
+    <div class="summary-item highlight"><div class="label">Tổng tiền phải trả</div><div class="value">${fmt(totalPay)}</div></div>
+    <div class="summary-item"><div class="label">Phương thức</div><div class="value" style="font-size:14px">${methodLabel}</div></div>
+    <div class="summary-item"><div class="label">Trả tháng 1</div><div class="value" style="font-size:16px">${fmt(first.total)}</div></div>
+    <div class="summary-item"><div class="label">Trả tháng cuối</div><div class="value" style="font-size:16px">${fmt(last.total)}</div></div>
+    <div class="summary-item"><div class="label">Trả trung bình/tháng</div><div class="value" style="font-size:16px">${fmt(monthlyAvg)}</div></div>
+  `;
+  document.getElementById('summaryGrid').innerHTML = summaryHTML;
+
+  // ---- So sanh dong tien voi tien dien tiet kiem (neu da tinh Muc 02) ----
+  const cfCard = document.getElementById('cashflowCompareCard');
+  if(window._solarData){
+    const savings = window._solarData.tienDienThang;
+    const diff = savings - monthlyAvg;
+    const positive = diff >= 0;
+    const cfHTML = `
+      <div class="cashflow-line"><span class="cf-label">Tiền điện tiết kiệm được / tháng (Mục 02)</span><span class="cf-value">${fmt(savings)}</span></div>
+      <div class="cashflow-line"><span class="cf-label">Trả nợ vay trung bình / tháng (Mục 03, ${months_label(schedule)})</span><span class="cf-value">${fmt(monthlyAvg)}</span></div>
+      <div class="cashflow-line total"><span class="cf-label">${positive?'Dư ra mỗi tháng':'Còn thiếu mỗi tháng (cần bù thêm)'}</span><span class="cf-value ${positive?'positive':'negative'}">${positive?'+':'−'}${fmt(Math.abs(diff))}</span></div>
+    `;
+    document.getElementById('cashflowCompareBody').innerHTML = cfHTML;
+    cfCard.style.display = 'block';
+  } else {
+    cfCard.style.display = 'none';
+  }
+
+  const tbody = document.getElementById('scheduleBody');
+  tbody.innerHTML = schedule.map(row=>{
+    const yr = Math.ceil(row.m/12);
+    const isYearEnd = row.m % 12 === 0;
+    return `<tr class="${isYearEnd?'year-end':''}">
+      <td>${row.m}</td>
+      <td>Năm ${yr}</td>
+      <td>${fmt(row.opening)}</td>
+      <td>${fmt(row.principal)}</td>
+      <td>${fmt(row.interest)}</td>
+      <td>${fmt(row.total)}</td>
+      <td>${fmt(row.closing)}</td>
+    </tr>`;
+  }).join('');
+
+  window._lastSchedule = schedule;
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function months_label(schedule){
+  return schedule.length + ' tháng';
+}
+
+function exportCSV(){
+  if(!window._lastSchedule){ return; }
+  const name = document.getElementById('custName').value || 'khach_hang';
+  let csv = 'Thang,Nam,Du no dau ky,Tra goc,Tra lai,Tong tra,Du no cuoi ky\n';
+  window._lastSchedule.forEach(row=>{
+    const yr = Math.ceil(row.m/12);
+    csv += `${row.m},${yr},${Math.round(row.opening)},${Math.round(row.principal)},${Math.round(row.interest)},${Math.round(row.total)},${Math.round(row.closing)}\n`;
+  });
+  if(window._solarData){
+    const sd = window._solarData;
+    csv += `\nQuy mo he thong,,,,,,\n`;
+    csv += `Cong suat (kWp),${sd.kWp.toFixed(2)},,,,,\n`;
+    csv += `So tam pin,${sd.panelCount},,,,,\n`;
+    csv += `Dien tich mai (m2),${sd.area.toFixed(1)},,,,,\n`;
+    csv += `Tien dien tiet kiem/thang,${Math.round(sd.tienDienThang)},,,,,\n`;
+  }
+  const blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8;'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `bang-tinh_${name.replace(/\s+/g,'-')}.csv`;
+  link.click();
+}
+</script>
+</body>
+</html>

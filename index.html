@@ -404,6 +404,10 @@
         <label>Tổng mức đầu tư dự kiến (VNĐ)</label>
         <input type="text" id="investAmount" value="1,000,000,000" inputmode="numeric">
       </div>
+      <div class="field" style="margin-bottom:0">
+        <label>Hoá đơn tiền điện thực tế của khách <span class="opt">(không bắt buộc — nếu biết, hệ tự ước tính tỷ lệ tự dùng sát với khách này hơn, thay vì dùng mức trung bình chung)</span></label>
+        <input type="text" id="custActualBill" placeholder="VD: 22.000.000 — để trống nếu chưa biết" inputmode="numeric">
+      </div>
     </div>
 
     <div id="sizeModeBillFields" style="display:none;margin-top:18px;">
@@ -600,7 +604,7 @@ function attachThousands(id){
     e.target.value = Number(raw).toLocaleString('en-US');
   });
 }
-['investAmount','billAmount','billPrice','suatDauTu','elecPrice','panelPrice','loanAmount'].forEach(attachThousands);
+['investAmount','custActualBill','billAmount','billPrice','suatDauTu','elecPrice','panelPrice','loanAmount'].forEach(attachThousands);
 
 /* ================= SECTION 02 — SOLAR SIZING ================= */
 let currentSizeMode = 'budget';
@@ -621,6 +625,7 @@ function calculateSolar(){
   const loanRatio    = (Number(document.getElementById('loanRatioPct').value) || 70) / 100;
 
   let tongMucDauTu, tudung, giadien, kWpRaw, tier;
+  let custBill = 0, selfUseSource = 'tier', giaTriDienThangUocTinh = 0, tyLeSoVoiHoaDon = 0;
 
   if(currentSizeMode === 'budget'){
     tongMucDauTu = num('investAmount');
@@ -630,10 +635,25 @@ function calculateSolar(){
     }
     tier = lookupTier(tongMucDauTu);
     document.getElementById('suatDauTu').value = tier.suat.toLocaleString('en-US');
-    document.getElementById('selfUsePct').value = Math.round(tier.tudung*100);
     document.getElementById('elecPrice').value = tier.giadien.toLocaleString('en-US');
     const suat = num('suatDauTu') || tier.suat;
     kWpRaw = tongMucDauTu / suat;
+
+    // Neu biet hoa don thuc te cua khach, uoc tinh ty le tu dung SAT VOI KHACH NAY hon,
+    // thay vi chi dung muc trung binh chung theo khung dau tu (tier.tudung).
+    custBill = num('custActualBill');
+    let suggestedSelfUse = tier.tudung;
+    if(custBill > 0){
+      const giadienTmp = tier.giadien;
+      const sanLuongThangTmp = kWpRaw * yieldPerKwp / 12;
+      giaTriDienThangUocTinh = sanLuongThangTmp * giadienTmp;
+      tyLeSoVoiHoaDon = giaTriDienThangUocTinh > 0 ? (custBill / giaTriDienThangUocTinh) : 0;
+      // Gioi han 20%-95%: khach dung it hon gia tri dien tao ra => chi tu dung duoc dung ty le do (phan du se lang phi vi chua ban duoc);
+      // khach dung nhieu hon/bang => gan nhu tu dung het, nhung khong bao gio dat 100% vi luon co luc vang nha/nghi.
+      suggestedSelfUse = Math.min(0.95, Math.max(0.20, tyLeSoVoiHoaDon));
+      selfUseSource = 'bill-compare';
+    }
+    document.getElementById('selfUsePct').value = Math.round(suggestedSelfUse*100);
   } else {
     const billAmt   = num('billAmount');
     const billPrice = num('billPrice') || 3000;
@@ -679,6 +699,14 @@ function calculateSolar(){
   const vay     = tongMucDauTu * loanRatio;
   const doiUng  = tongMucDauTu - vay;
 
+  // So sanh voi hoa don thuc te cua khach (neu co nhap) - dung GIA TRI DIEN cuoi cung (da lam tron theo so tam)
+  const coHoaDonThucTe = custBill > 0;
+  const dapUngHoaDon = coHoaDonThucTe ? (giaTriDienThang / custBill) : 0;
+  const compareItems = coHoaDonThucTe ? `
+    <div class="summary-item"><div class="label">Hoá đơn thực tế của khách</div><div class="value" style="font-size:16px">${fmt(custBill)}</div></div>
+    <div class="summary-item ${dapUngHoaDon>1.1?'warn':''}"><div class="label">Hệ đáp ứng so với hoá đơn</div><div class="value" style="font-size:16px">${fmtPct(dapUngHoaDon)}</div></div>
+  ` : '';
+
   const html = `
     <div class="summary-item highlight"><div class="label">Công suất hệ thống</div><div class="value">${fmtKwp(kWpActual)}</div></div>
     <div class="summary-item highlight"><div class="label">Số tấm pin (${panelW}W/tấm)</div><div class="value">${fmtInt(panelCount)} tấm</div></div>
@@ -686,22 +714,42 @@ function calculateSolar(){
     <div class="summary-item"><div class="label">Tổng mức đầu tư</div><div class="value" style="font-size:16px">${fmt(tongMucDauTu)}</div></div>
     <div class="summary-item gold"><div class="label">Giá trị điện tạo ra/tháng</div><div class="value" style="font-size:16px">${fmt(giaTriDienThang)}</div></div>
     <div class="summary-item gold"><div class="label">Tiền điện tiết kiệm/tháng (thực nhận)</div><div class="value" style="font-size:16px">${fmt(tienDienThang)}</div></div>
+    ${compareItems}
     <div class="summary-item"><div class="label">Vốn vay đề xuất (Quỹ BVMT)</div><div class="value" style="font-size:16px">${fmt(vay)}</div></div>
     <div class="summary-item"><div class="label">Vốn đối ứng khách hàng</div><div class="value" style="font-size:16px">${fmt(doiUng)}</div></div>
   `;
   document.getElementById('solarSummaryGrid').innerHTML = html;
 
+  // ---- CAU TU VAN KHACH HANG (1 cau ngan, de doc truoc mat khach) ----
+  let cauTuVan;
+  if(coHoaDonThucTe && dapUngHoaDon >= 0.95){
+    cauTuVan = `Hoá đơn hiện tại của anh/chị khoảng ${fmt(custBill)}/tháng — hệ ${fmtKwp(kWpActual)} này tạo ra lượng điện tương đương ${fmtPct(dapUngHoaDon)} con số đó, `+
+      `và vì nhà/cơ sở dùng điện đều trong ngày nên gần như dùng hết ngay tại chỗ — tiết kiệm thực tế khoảng <b>${fmt(tienDienThang)}/tháng</b>.`;
+  } else if(coHoaDonThucTe){
+    cauTuVan = `Hệ ${fmtKwp(kWpActual)} này tạo ra lượng điện trị giá khoảng ${fmt(giaTriDienThang)}/tháng, cao hơn hoá đơn hiện tại của anh/chị (${fmt(custBill)}/tháng) — `+
+      `nên chỉ dùng hết được khoảng ${fmtPct(dapUngHoaDon)}, phần dư còn lại chưa bán được nên chưa tính vào tiết kiệm. Tiết kiệm thực tế khoảng <b>${fmt(tienDienThang)}/tháng</b>. `+
+      `Có thể cân nhắc lắp quy mô nhỏ hơn để không dư thừa công suất.`;
+  } else {
+    cauTuVan = `Hệ ${fmtKwp(kWpActual)} này mỗi tháng tạo ra lượng điện trị giá khoảng ${fmt(giaTriDienThang)}, trong đó anh/chị dùng ngay và tiết kiệm thực tế khoảng <b>${fmt(tienDienThang)}/tháng</b> `+
+      `(ước tính theo mức tự dùng trung bình của phân khúc — nhập thêm hoá đơn thực tế ở Mục 02 để có số chính xác hơn cho đúng khách hàng này).`;
+  }
+
   document.getElementById('solarNote').innerHTML =
+    `<div style="font-size:13.5px;color:var(--ink);margin-bottom:10px;line-height:1.6;">💬 <b>Câu tư vấn gợi ý:</b> ${cauTuVan}</div>`+
+    `<div style="border-top:1px dashed var(--line);padding-top:10px;">`+
     `Phân khúc tham chiếu: <b>${tier.phankhuc}</b> · Giá trị tấm pin ≈ ${fmt(panelValue)} `+
     `(${fmtPct(tyTrongTam)} tổng mức đầu tư, phần còn lại là inverter, khung giá đỡ, dây điện/tủ điện, nhân công lắp đặt, đấu nối) · `+
-    `Sản lượng điện ước tính ${fmtInt(sanLuongNam)} kWh/năm (${fmtInt(sanLuongThang)} kWh/tháng), tỷ lệ tự dùng ${fmtPct(tudung)} → `+
-    `<b>Giá trị điện tạo ra/tháng</b> (${fmt(giaTriDienThang)}) là quy đổi TOÀN BỘ sản lượng theo giá điện — dùng để so sánh nhanh với hoá đơn hiện tại của khách. `+
-    `<b>Tiền điện tiết kiệm/tháng</b> (${fmt(tienDienThang)}) là số tiền THỰC NHẬN, chỉ tính phần điện tự dùng ngay tại chỗ. `+
-    `Phần điện dư còn lại (${fmtPct(tyLeDu)}, ≈${fmtInt(dienDuThang)} kWh/tháng) <b>hiện chưa bán được</b> — dù Nghị định 243/2026/NĐ-CP cho phép bán tối đa 50% điện dư về mặt pháp lý, `+
-    `cơ chế thu mua thực tế qua EVN/Quỹ tại Nghệ An chưa triển khai, nên KHÔNG đưa vào cam kết lợi ích với khách hàng — chỉ tư vấn dựa trên mức tiết kiệm tự dùng thực tế ở trên. `+
+    `Sản lượng điện ước tính ${fmtInt(sanLuongNam)} kWh/năm (${fmtInt(sanLuongThang)} kWh/tháng). `+
+    `Tỷ lệ tự dùng áp dụng: <b>${fmtPct(tudung)}</b> ${selfUseSource==='bill-compare' ? `(tự ước tính từ hoá đơn thực tế của khách, thay vì mức trung bình ${fmtPct(tier.tudung)} của phân khúc)` : `(mức trung bình theo phân khúc — có thể sửa tay ở mục "⚙ Tuỳ chỉnh giả định" nếu biết hoá đơn thực tế của khách)`}. `+
+    `<br><br>`+
+    `<b>Giá trị điện tạo ra/tháng</b> = TOÀN BỘ sản lượng quy đổi theo giá điện — số tham khảo để so sánh với hoá đơn khách, KHÔNG phải số tiền thực nhận. `+
+    `<b>Tiền điện tiết kiệm/tháng</b> = số tiền THỰC NHẬN, chỉ tính phần điện tự dùng ngay tại chỗ — dùng số này khi cam kết với khách. `+
+    `Phần điện dư còn lại (${fmtPct(tyLeDu)}, ≈${fmtInt(dienDuThang)} kWh/tháng) <b>hiện chưa bán được</b> — Nghị định 243/2026/NĐ-CP cho phép bán tối đa 50% điện dư về mặt pháp lý, `+
+    `nhưng cơ chế thu mua thực tế qua EVN/Quỹ tại Nghệ An chưa triển khai, nên KHÔNG đưa vào cam kết lợi ích với khách hàng. `+
     `Tổng tiết kiệm thực tế ước tính ${fmt(tienDienNam)}/năm. `+
     `Số liệu là ước tính minh hoạ theo giả định thị trường tham khảo 8/2026 — cần khảo sát thực tế (bức xạ, kết cấu mái, phụ tải) `+
-    `và báo giá chính thức từ đối tác thi công trước khi chốt hợp đồng.`;
+    `và báo giá chính thức từ đối tác thi công trước khi chốt hợp đồng.`+
+    `</div>`;
 
   // tu dong dien vao Muc 03 - khoan vay
   document.getElementById('loanAmount').value = Math.round(vay).toLocaleString('en-US');

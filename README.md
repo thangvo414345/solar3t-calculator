@@ -64,7 +64,7 @@ Toàn bộ logic tính toán nằm trong thẻ `<script>` ở cuối mỗi file.
 ## Liên hệ
 
 **SOLAR 3T NGHỆ AN**
-Nghi Phú, TP. Vinh, Nghệ An
+TP. Vinh, Nghệ An
 ĐT: 0977 687 227
 
 ## Giấy phép

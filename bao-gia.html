@@ -500,6 +500,8 @@
 
     <div class="cust-recap" id="custRecap">Khách hàng: <b>—</b></div>
 
+    <div class="note-box no-print" id="cauTuVanBox" style="margin:0 0 18px;"></div>
+
     <div class="table-scroll">
       <table>
         <thead>
@@ -823,10 +825,22 @@ function recalcQuote(){
   document.getElementById('grandOut').textContent = fmt(total);
 
   const monthlySaving = window._monthlySaving || 0;
+  const years = monthlySaving>0 ? (total/(monthlySaving*12)) : 0;
   const paybackCell = document.getElementById('paybackCell');
   if(paybackCell){
-    const years = monthlySaving>0 ? (total/(monthlySaving*12)) : 0;
     paybackCell.innerHTML = `<div class="label">Thời gian hoàn vốn</div><div class="value" style="font-size:15px">${years>0 ? years.toLocaleString('en-US',{minimumFractionDigits:1,maximumFractionDigits:1})+' năm' : '—'}</div>`;
+  }
+
+  // ---- CAU TU VAN KHACH HANG (doc truoc mat khach, cap nhat lai theo bang gia da sua) ----
+  const cauTuVanEl = document.getElementById('cauTuVanBox');
+  if(cauTuVanEl && lastKwp > 0){
+    if(years > 0){
+      cauTuVanEl.innerHTML = `💬 <b>Câu tư vấn gợi ý:</b> Hệ ${fmtKwp(lastKwp)} này tổng đầu tư khoảng <b>${fmt(total)}</b>, giúp anh/chị tiết kiệm khoảng `+
+        `<b>${fmt(monthlySaving)}/tháng</b> tiền điện — hoàn vốn trong khoảng <b>${years.toLocaleString('en-US',{minimumFractionDigits:1,maximumFractionDigits:1})} năm</b>, `+
+        `trong khi tuổi thọ hệ thống trên 25 năm, nghĩa là hơn 20 năm còn lại gần như dùng điện miễn phí.`;
+    } else {
+      cauTuVanEl.innerHTML = '';
+    }
   }
 }
 
